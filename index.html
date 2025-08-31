@@ -630,7 +630,7 @@
                     <button class="btn" id="browseBtn">Browse Files</button>
                 </div>
                 
-                <div class="format-options">
+                <div class="format-options" id="formatOptions">
                     <div class="format-option active" data-format="jpeg">
                         <i class="fas fa-file-image"></i>
                         <p>JPEG</p>
@@ -777,6 +777,7 @@
             let selectedFile = null;
             let selectedFormat = 'jpeg';
             let convertedImageData = null;
+            let originalFileName = '';
             
             // Event Listeners
             browseBtn.addEventListener('click', () => fileInput.click());
@@ -848,6 +849,7 @@
                 }
                 
                 selectedFile = file;
+                originalFileName = file.name.split('.').slice(0, -1).join('.');
                 convertBtn.disabled = false;
                 
                 // Show preview
@@ -895,7 +897,7 @@
                 }
                 
                 convertedInfo.innerHTML = `
-                    <p><strong>Name:</strong> <span>converted.${selectedFormat}</span></p>
+                    <p><strong>Name:</strong> <span>${originalFileName}.${selectedFormat}</span></p>
                     <p><strong>Type:</strong> <span>image/${selectedFormat}</span></p>
                     <p><strong>Size:</strong> <span>${convertedSize} KB</span></p>
                 `;
@@ -916,7 +918,7 @@
                 // Create a temporary link for download
                 const link = document.createElement('a');
                 link.href = convertedImageData;
-                link.download = `converted.${selectedFormat}`;
+                link.download = `${originalFileName}.${selectedFormat}`;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
@@ -925,6 +927,7 @@
             function resetConverter() {
                 selectedFile = null;
                 convertedImageData = null;
+                originalFileName = '';
                 fileInput.value = '';
                 convertBtn.disabled = true;
                 previewSection.style.display = 'none';
