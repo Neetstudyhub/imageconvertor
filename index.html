@@ -225,44 +225,15 @@
             background: #f5f7ff;
         }
 
-        /* Format Options */
-        .format-options {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin: 30px 0;
+        .btn-disabled {
+            background: #ccc;
+            cursor: not-allowed;
         }
 
-        .format-option {
-            padding: 20px;
-            border: 2px solid #eaeaea;
-            border-radius: var(--border-radius);
-            text-align: center;
-            cursor: pointer;
-            transition: var(--transition);
-            flex: 1;
-        }
-
-        .format-option:hover {
-            border-color: var(--primary);
-            transform: translateY(-3px);
-        }
-
-        .format-option.active {
-            border-color: var(--primary);
-            background: #f0f5ff;
-            transform: translateY(-3px);
-        }
-
-        .format-option i {
-            font-size: 32px;
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-
-        .format-option p {
-            font-weight: 600;
-            color: var(--dark);
+        .btn-disabled:hover {
+            background: #ccc;
+            transform: none;
+            box-shadow: none;
         }
 
         /* Preview Section */
@@ -321,6 +292,71 @@
             justify-content: center;
             gap: 15px;
             flex-wrap: wrap;
+        }
+
+        /* Format Options */
+        .format-options {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .format-option {
+            padding: 20px;
+            border: 2px solid #eaeaea;
+            border-radius: var(--border-radius);
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            flex: 1;
+        }
+
+        .format-option:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .format-option.active {
+            border-color: var(--primary);
+            background: #f0f5ff;
+            transform: translateY(-3px);
+        }
+
+        .format-option i {
+            font-size: 32px;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .format-option p {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        /* Conversion Section */
+        .conversion-section {
+            display: none;
+            margin-top: 30px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.3s ease;
         }
 
         /* How It Works Section */
@@ -630,35 +666,57 @@
                     <button class="btn" id="browseBtn">Browse Files</button>
                 </div>
                 
-                <div class="format-options" id="formatOptions">
-                    <div class="format-option active" data-format="jpeg">
-                        <i class="fas fa-file-image"></i>
-                        <p>JPEG</p>
-                    </div>
-                    <div class="format-option" data-format="png">
-                        <i class="fas fa-file-image"></i>
-                        <p>PNG</p>
-                    </div>
-                    <div class="format-option" data-format="webp">
-                        <i class="fas fa-file-image"></i>
-                        <p>WebP</p>
-                    </div>
-                    <div class="format-option" data-format="gif">
-                        <i class="fas fa-file-image"></i>
-                        <p>GIF</p>
-                    </div>
-                </div>
-                
-                <div class="action-buttons">
-                    <button class="btn" id="convertBtn" disabled>Convert Image</button>
-                </div>
-                
                 <div class="preview-section" id="previewSection">
                     <div class="preview-container">
                         <div class="preview-box">
                             <h3>Original Image</h3>
                             <img src="" alt="Original preview" class="preview-img" id="originalPreview">
                             <div class="image-info" id="originalInfo"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary" id="newUploadBtn">
+                            <i class="fas fa-redo"></i> Upload Different Image
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="conversion-section" id="conversionSection">
+                    <h3 style="text-align: center; margin-bottom: 20px;">Select Output Format</h3>
+                    
+                    <div class="format-options" id="formatOptions">
+                        <div class="format-option" data-format="jpeg">
+                            <i class="fas fa-file-image"></i>
+                            <p>JPEG</p>
+                        </div>
+                        <div class="format-option" data-format="png">
+                            <i class="fas fa-file-image"></i>
+                            <p>PNG</p>
+                        </div>
+                        <div class="format-option" data-format="webp">
+                            <i class="fas fa-file-image"></i>
+                            <p>WebP</p>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn" id="convertBtn">
+                            <i class="fas fa-cog"></i> Convert Image
+                        </button>
+                    </div>
+                    
+                    <div class="progress-container" id="progressContainer">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                </div>
+                
+                <div class="preview-section" id="resultSection">
+                    <div class="preview-container">
+                        <div class="preview-box">
+                            <h3>Original Image</h3>
+                            <img src="" alt="Original preview" class="preview-img" id="originalPreviewResult">
+                            <div class="image-info" id="originalInfoResult"></div>
                         </div>
                         <div class="preview-box">
                             <h3>Converted Image</h3>
@@ -763,21 +821,29 @@
             const convertBtn = document.getElementById('convertBtn');
             const downloadBtn = document.getElementById('downloadBtn');
             const newConvertBtn = document.getElementById('newConvertBtn');
+            const newUploadBtn = document.getElementById('newUploadBtn');
             const previewSection = document.getElementById('previewSection');
+            const conversionSection = document.getElementById('conversionSection');
+            const resultSection = document.getElementById('resultSection');
             const originalPreview = document.getElementById('originalPreview');
+            const originalPreviewResult = document.getElementById('originalPreviewResult');
             const convertedPreview = document.getElementById('convertedPreview');
             const originalInfo = document.getElementById('originalInfo');
+            const originalInfoResult = document.getElementById('originalInfoResult');
             const convertedInfo = document.getElementById('convertedInfo');
             const formatOptions = document.querySelectorAll('.format-option');
+            const progressBar = document.getElementById('progressBar');
+            const progressContainer = document.getElementById('progressContainer');
             const hamburger = document.getElementById('hamburger');
             const mobileNav = document.getElementById('mobileNav');
             const closeMenu = document.getElementById('closeMenu');
             const overlay = document.getElementById('overlay');
             
             let selectedFile = null;
-            let selectedFormat = 'jpeg';
+            let selectedFormat = '';
             let convertedImageData = null;
             let originalFileName = '';
+            let originalFileType = '';
             
             // Event Listeners
             browseBtn.addEventListener('click', () => fileInput.click());
@@ -811,11 +877,14 @@
             
             newConvertBtn.addEventListener('click', resetConverter);
             
+            newUploadBtn.addEventListener('click', resetConverter);
+            
             formatOptions.forEach(option => {
                 option.addEventListener('click', () => {
                     formatOptions.forEach(opt => opt.classList.remove('active'));
                     option.classList.add('active');
                     selectedFormat = option.getAttribute('data-format');
+                    convertBtn.disabled = false;
                 });
             });
             
@@ -850,12 +919,13 @@
                 
                 selectedFile = file;
                 originalFileName = file.name.split('.').slice(0, -1).join('.');
-                convertBtn.disabled = false;
+                originalFileType = file.type.split('/')[1];
                 
                 // Show preview
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     originalPreview.src = e.target.result;
+                    originalPreviewResult.src = e.target.result;
                     
                     // Show file info
                     const sizeKB = Math.round(file.size / 1024);
@@ -864,52 +934,92 @@
                         <p><strong>Type:</strong> <span>${file.type}</span></p>
                         <p><strong>Size:</strong> <span>${sizeKB} KB</span></p>
                     `;
+                    
+                    originalInfoResult.innerHTML = `
+                        <p><strong>Name:</strong> <span>${file.name}</span></p>
+                        <p><strong>Type:</strong> <span>${file.type}</span></p>
+                        <p><strong>Size:</strong> <span>${sizeKB} KB</span></p>
+                    `;
                 };
                 reader.readAsDataURL(file);
+                
+                // Show preview and conversion options
+                dropArea.style.display = 'none';
+                previewSection.style.display = 'block';
+                conversionSection.style.display = 'block';
+                resultSection.style.display = 'none';
+                
+                // Reset format selection
+                formatOptions.forEach(opt => opt.classList.remove('active'));
+                selectedFormat = '';
+                convertBtn.disabled = true;
             }
             
             function convertImage() {
-                if (!selectedFile) return;
+                if (!selectedFile || !selectedFormat) return;
+                
+                // Show progress
+                progressContainer.style.display = 'block';
+                progressBar.style.width = '30%';
                 
                 // Simulate conversion process
-                convertedPreview.src = originalPreview.src;
-                
-                // Simulate file info change
-                const originalSize = Math.round(selectedFile.size / 1024);
-                let convertedSize = 0;
-                
-                // Random size change based on format
-                switch(selectedFormat) {
-                    case 'jpeg':
-                        convertedSize = Math.round(originalSize * 0.7);
-                        break;
-                    case 'png':
-                        convertedSize = Math.round(originalSize * 1.2);
-                        break;
-                    case 'webp':
-                        convertedSize = Math.round(originalSize * 0.6);
-                        break;
-                    case 'gif':
-                        convertedSize = Math.round(originalSize * 1.5);
-                        break;
-                    default:
-                        convertedSize = originalSize;
-                }
-                
-                convertedInfo.innerHTML = `
-                    <p><strong>Name:</strong> <span>${originalFileName}.${selectedFormat}</span></p>
-                    <p><strong>Type:</strong> <span>image/${selectedFormat}</span></p>
-                    <p><strong>Size:</strong> <span>${convertedSize} KB</span></p>
-                `;
-                
-                // Show preview section
-                previewSection.style.display = 'block';
-                
-                // Scroll to preview
-                previewSection.scrollIntoView({ behavior: 'smooth' });
-                
-                // Simulate conversion result
-                convertedImageData = originalPreview.src;
+                setTimeout(() => {
+                    progressBar.style.width = '70%';
+                    
+                    setTimeout(() => {
+                        progressBar.style.width = '100%';
+                        
+                        // Use canvas for actual conversion
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const img = new Image();
+                        
+                        img.onload = function() {
+                            canvas.width = img.width;
+                            canvas.height = img.height;
+                            ctx.drawImage(img, 0, 0);
+                            
+                            // Get the converted image data
+                            let convertedData;
+                            try {
+                                if (selectedFormat === 'jpeg') {
+                                    convertedData = canvas.toDataURL('image/jpeg', 0.9);
+                                } else if (selectedFormat === 'png') {
+                                    convertedData = canvas.toDataURL('image/png');
+                                } else if (selectedFormat === 'webp') {
+                                    convertedData = canvas.toDataURL('image/webp', 0.9);
+                                }
+                                
+                                convertedPreview.src = convertedData;
+                                convertedImageData = convertedData;
+                                
+                                // Calculate file size (approximate)
+                                const base64 = convertedData.split(',')[1];
+                                const binaryLength = window.atob(base64).length;
+                                const sizeKB = Math.round(binaryLength / 1024);
+                                
+                                convertedInfo.innerHTML = `
+                                    <p><strong>Name:</strong> <span>${originalFileName}.${selectedFormat}</span></p>
+                                    <p><strong>Type:</strong> <span>image/${selectedFormat}</span></p>
+                                    <p><strong>Size:</strong> <span>${sizeKB} KB</span></p>
+                                `;
+                                
+                                // Show result section
+                                conversionSection.style.display = 'none';
+                                resultSection.style.display = 'block';
+                                progressContainer.style.display = 'none';
+                                
+                                // Scroll to results
+                                resultSection.scrollIntoView({ behavior: 'smooth' });
+                            } catch (e) {
+                                alert('Conversion failed. This format may not be supported by your browser.');
+                                progressContainer.style.display = 'none';
+                            }
+                        };
+                        
+                        img.src = originalPreview.src;
+                    }, 300);
+                }, 300);
             }
             
             function downloadImage() {
@@ -928,13 +1038,26 @@
                 selectedFile = null;
                 convertedImageData = null;
                 originalFileName = '';
+                originalFileType = '';
                 fileInput.value = '';
-                convertBtn.disabled = true;
+                
+                dropArea.style.display = 'block';
                 previewSection.style.display = 'none';
+                conversionSection.style.display = 'none';
+                resultSection.style.display = 'none';
+                
+                formatOptions.forEach(opt => opt.classList.remove('active'));
+                selectedFormat = '';
+                
                 originalPreview.src = '';
+                originalPreviewResult.src = '';
                 convertedPreview.src = '';
                 originalInfo.innerHTML = '';
+                originalInfoResult.innerHTML = '';
                 convertedInfo.innerHTML = '';
+                
+                progressBar.style.width = '0%';
+                progressContainer.style.display = 'none';
             }
         });
     </script>
