@@ -1,786 +1,1331 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ImageCraft Pro | Premium Image Converter</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ImageCraft Pro | Premium Image Converter</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #6c757d;
+            --dark: #1e2a4a;
+            --light: #f8f9fa;
+            --success: #28a745;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+            --container-width: 1200px;
+        }
 
-  <!-- Fonts & Icons -->
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
 
-  <style>
-    :root{
-      --primary:#4361ee;
-      --primary-dark:#3a56d4;
-      --surface:#ffffff;
-      --bg:#f6f7fb;
-      --text:#1e2a4a;
-      --muted:#667085;
-      --border:#e6e8ef;
-      --radius:14px;
-      --shadow:0 10px 30px rgba(17, 24, 39, .08);
-      --shadow-sm:0 6px 18px rgba(17, 24, 39, .06);
-      --container:1200px;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(1200px 600px at 100% -50%, #eaf0ff 10%, transparent 40%),
-        radial-gradient(1000px 500px at -20% 0%, #f2f6ff 10%, transparent 50%),
-        var(--bg);
-      line-height:1.6;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-    }
-    .container{max-width:var(--container);margin-inline:auto;padding-inline:20px}
+        body {
+            background-color: #f5f7ff;
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
 
-    /* Header */
-    header{
-      position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.88);
-      backdrop-filter:saturate(140%) blur(8px);
-      border-bottom:1px solid var(--border);
-    }
-    .header-wrap{
-      display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;
-    }
-    .logo{display:flex;align-items:center;gap:10px;color:var(--primary);font-weight:700}
-    .logo i{font-size:26px}
-    nav ul{display:flex;gap:28px;list-style:none;margin:0;padding:0}
-    nav a{
-      color:var(--text);text-decoration:none;font-weight:500;position:relative;padding:6px 0;
-    }
-    nav a:after{
-      content:"";position:absolute;left:0;bottom:-6px;height:2px;width:0;background:var(--primary);
-      transition:width .2s ease;
-    }
-    nav a:hover{color:var(--primary)}
-    nav a:hover:after{width:100%}
-    .nav-cta{
-      display:inline-flex;align-items:center;gap:8px;color:#fff;background:var(--primary);
-      padding:10px 16px;border-radius:999px;border:1px solid var(--primary-dark);text-decoration:none;
-      box-shadow:var(--shadow-sm);
-    }
-    .nav-cta:hover{background:var(--primary-dark)}
+        .container {
+            width: 100%;
+            max-width: var(--container-width);
+            margin: 0 auto;
+            padding: 0 20px;
+        }
 
-    /* Hamburger (accessible) */
-    .hamburger{
-      display:none;appearance:none;border:1px solid var(--border);background:#fff;border-radius:10px;
-      width:44px;height:44px;align-items:center;justify-content:center;color:var(--text);
-      box-shadow:var(--shadow-sm);
-    }
-    .hamburger:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+        /* Header */
+        header {
+            background: white;
+            color: var(--dark);
+            padding: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-    /* Mobile panel */
-    .overlay{
-      position:fixed;inset:0;background:rgba(2,6,23,.5);opacity:0;visibility:hidden;transition:.2s;
-      z-index:999;
-    }
-    .overlay.active{opacity:1;visibility:visible}
-    .mobile-nav{
-      position:fixed;top:0;right:-100%;height:100%;width:min(85%,380px);
-      background:#fff;z-index:1000;box-shadow:-8px 0 30px rgba(2,6,23,.2);
-      transition:right .25s ease;display:flex;flex-direction:column;padding:84px 24px 24px;
-    }
-    .mobile-nav.active{right:0}
-    .mobile-nav .close{
-      position:absolute;top:18px;right:18px;border:none;background:#fff;border:1px solid var(--border);
-      width:40px;height:40px;border-radius:10px;display:grid;place-items:center;
-    }
-    .mobile-nav nav ul{flex-direction:column;gap:4px}
-    .mobile-nav nav a{display:block;padding:12px 0;border-bottom:1px dashed var(--border)}
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-    /* Hero */
-    .hero{padding:56px 0 20px;text-align:center}
-    .hero h1{
-      font-size:clamp(28px, 4.2vw, 48px);line-height:1.15;margin:6px 0 12px;color:#111827;
-    }
-    .hero p{max-width:740px;margin:0 auto 26px;color:var(--muted);font-size:clamp(15px,2.2vw,18px)}
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            z-index: 101;
+        }
 
-    /* Converter */
-    .converter{
-      background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:26px;
-      max-width:900px;margin:0 auto 22px;border:1px solid var(--border);
-    }
-    .drop{
-      border:2px dashed #d5dbef;border-radius:var(--radius);padding:34px 16px;text-align:center;
-      transition:.2s;cursor:pointer;background:#fbfcff;
-    }
-    .drop:hover{border-color:var(--primary);background:#f6f8ff}
-    .drop i{font-size:46px;color:var(--primary);margin-bottom:8px}
-    .btn{
-      display:inline-flex;align-items:center;gap:10px;border:none;border-radius:999px;
-      padding:12px 20px;font-weight:600;cursor:pointer;transition:.2s;
-    }
-    .btn-primary{background:var(--primary);color:#fff;border:1px solid var(--primary-dark)}
-    .btn-primary:hover{background:var(--primary-dark)}
-    .btn-outline{background:#fff;color:var(--primary);border:1px solid var(--primary)}
-    .btn-muted{background:#e7e9f3;color:#334155;border:1px solid #d7dbe8;cursor:not-allowed}
-    .btn-icon{gap:8px}
+        .logo i {
+            font-size: 28px;
+        }
 
-    .sections{margin-top:24px}
-    .row{display:flex;gap:24px;flex-wrap:wrap}
-    .col{flex:1 1 280px}
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
 
-    .card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow-sm)}
-    .preview{
-      width:100%;max-height:340px;object-fit:contain;border-radius:12px;border:1px solid var(--border);
-      background:#fafbff;
-    }
-    .meta{margin-top:10px;font-size:14px;color:#374151}
-    .meta p{display:flex;justify-content:space-between;margin:6px 0}
-    .meta span{font-weight:600;color:#111827}
+        nav a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+        }
 
-    .formats{
-      display:grid;grid-template-columns:repeat(auto-fit, minmax(120px, 1fr));gap:12px;margin:14px 0 6px;
-    }
-    .format{
-      border:1.5px solid var(--border);border-radius:12px;padding:14px;text-align:center;cursor:pointer;
-      transition:.2s;background:#fff;
-    }
-    .format:hover{transform:translateY(-2px);box-shadow:var(--shadow-sm);border-color:#d3d8eb}
-    .format.active{border-color:var(--primary);box-shadow:0 0 0 3px rgba(67,97,238,.12)}
-    .format small{display:block;margin-top:6px;color:var(--muted);font-size:12px}
+        nav a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--primary);
+            transition: var(--transition);
+        }
 
-    .controls{display:grid;grid-template-columns:1fr;gap:12px;margin:8px 0 6px}
-    .control{display:flex;align-items:center;gap:10px;justify-content:space-between}
-    .control input[type="range"]{width:60%}
+        nav a:hover {
+            color: var(--primary);
+        }
 
-    .progress{display:none;margin-top:10px}
-    .progressbar-wrap{height:10px;background:#eef1f8;border-radius:6px;overflow:hidden}
-    .progressbar{height:100%;width:0;background:linear-gradient(90deg,var(--primary),#7b91ff)}
+        nav a:hover:after {
+            width: 100%;
+        }
 
-    .actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:8px}
+        .nav-cta {
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+        }
 
-    /* Ads (kept minimal) */
-    .ad{display:flex;align-items:center;justify-content:center;min-height:110px;background:#f8fafc;
-      border:1px dashed #dbe1f2;border-radius:12px;color:#64748b}
+        .nav-cta:hover {
+            background: var(--primary-dark);
+            color: white;
+        }
 
-    /* Footer */
-    footer{margin-top:60px;background:#0f172a;color:#d1d5db}
-    .footer-inner{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:28px;padding:36px 0}
-    footer a{color:#cbd5e1;text-decoration:none}
-    footer a:hover{color:#fff}
-    .copyright{border-top:1px solid rgba(255,255,255,.1);padding:16px 0;color:#94a3b8;text-align:center}
+        .nav-cta:after {
+            display: none;
+        }
 
-    /* Responsive tweaks */
-    @media (max-width: 860px){
-      nav ul{display:none}
-      .hamburger{display:inline-flex}
-      .hero{padding-top:36px}
-    }
-  </style>
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--dark);
+            z-index: 101;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 80px 0 60px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: var(--dark);
+            line-height: 1.2;
+        }
+
+        .hero h1 span {
+            color: var(--primary);
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: var(--secondary);
+            max-width: 700px;
+            margin: 0 auto 40px;
+        }
+
+        /* Converter Box */
+        .converter-box {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .upload-area {
+            border: 2px dashed #d0d7de;
+            border-radius: var(--border-radius);
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+        }
+
+        .upload-area i {
+            font-size: 48px;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .upload-area h3 {
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .upload-area p {
+            color: var(--secondary);
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 14px 32px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.15);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: #f5f7ff;
+        }
+
+        .btn-disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .btn-disabled:hover {
+            background: #ccc;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Format Options */
+        .format-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .format-option {
+            padding: 20px;
+            border: 2px solid #eaeaea;
+            border-radius: var(--border-radius);
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .format-option:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .format-option.active {
+            border-color: var(--primary);
+            background: #f0f5ff;
+            transform: translateY(-3px);
+        }
+
+        .format-option i {
+            font-size: 32px;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .format-option p {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        /* Preview Section */
+        .preview-section {
+            display: none;
+            margin-top: 40px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .preview-container {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .preview-box {
+            flex: 1;
+            text-align: center;
+        }
+
+        .preview-box h3 {
+            margin-bottom: 15px;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .preview-img {
+            width: 100%;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            max-height: 300px;
+            object-fit: contain;
+        }
+
+        .image-info {
+            background: #f8f9fa;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .image-info p {
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .image-info span {
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        /* Conversion Section */
+        .conversion-section {
+            display: none;
+            margin-top: 30px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Ad Placeholders */
+        .ad-container {
+            width: 100%;
+            background: #f8f9fa;
+            border-radius: var(--border-radius);
+            margin: 40px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 120px;
+            color: var(--secondary);
+            text-align: center;
+            box-shadow: var(--box-shadow);
+        }
+
+        .ad-label {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            font-size: 10px;
+            color: var(--secondary);
+            background: rgba(255, 255, 255, 0.8);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .ad-sidebar {
+            width: 300px;
+            min-height: 600px;
+            background: #f8f9fa;
+            border-radius: var(--border-radius);
+            margin-left: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--secondary);
+            text-align: center;
+            box-shadow: var(--box-shadow);
+            position: relative;
+        }
+
+        .ad-content {
+            width: 100%;
+            padding: 20px;
+        }
+
+        .content-with-ads {
+            display: flex;
+            justify-content: space-between;
+            margin: 60px 0;
+        }
+
+        .main-content {
+            flex: 1;
+        }
+
+        /* How It Works Section */
+        .how-it-works {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-title h2 {
+            font-size: 36px;
+            color: var(--dark);
+            margin-bottom: 15px;
+        }
+
+        .section-title p {
+            color: var(--secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .steps {
+            display: flex;
+            gap: 30px;
+        }
+
+        .step {
+            flex: 1;
+            text-align: center;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            background: #f8f9fa;
+            transition: var(--transition);
+        }
+
+        .step:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--box-shadow);
+        }
+
+        .step i {
+            font-size: 40px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .step h3 {
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .step p {
+            color: var(--secondary);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 60px 0 30px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-col {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .footer-col h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 12px;
+        }
+
+        .footer-col a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-col a:hover {
+            color: white;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icons a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .social-icons a:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Mobile Nav */
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            max-width: 400px;
+            height: 100vh;
+            background: white;
+            z-index: 1000;
+            padding: 80px 30px 30px;
+            box-shadow: -5px 0 25px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .mobile-nav.active {
+            right: 0;
+        }
+        
+        .mobile-nav ul {
+            list-style: none;
+        }
+        
+        .mobile-nav ul li {
+            margin-bottom: 20px;
+        }
+        
+        .mobile-nav a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 18px;
+            display: block;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+            transition: var(--transition);
+        }
+        
+        .mobile-nav a:hover {
+            color: var(--primary);
+            padding-left: 10px;
+        }
+        
+        .close-menu {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--dark);
+            transition: var(--transition);
+        }
+        
+        .close-menu:hover {
+            color: var(--primary);
+            transform: rotate(90deg);
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+        
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .steps {
+                flex-direction: column;
+            }
+            
+            .preview-container {
+                flex-direction: column;
+            }
+            
+            .format-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .content-with-ads {
+                flex-direction: column;
+            }
+            
+            .ad-sidebar {
+                width: 100%;
+                min-height: 120px;
+                margin: 40px 0 0 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 36px;
+            }
+            
+            .hero p {
+                font-size: 18px;
+            }
+            
+            nav ul {
+                display: none;
+            }
+            
+            .hamburger {
+                display: block;
+            }
+            
+            .format-options {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .converter-box {
+                padding: 25px;
+            }
+            
+            .upload-area {
+                padding: 30px 15px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .mobile-nav {
+                width: 85%;
+            }
+        }
+    </style>
 </head>
 <body>
-  <!-- Overlay + Mobile Nav -->
-  <div class="overlay" id="overlay" aria-hidden="true"></div>
-  <aside class="mobile-nav" id="mobileNav" aria-hidden="true" aria-label="Mobile">
-    <button class="close" id="closeMenu" aria-label="Close menu">
-      <i class="fas fa-times"></i>
-    </button>
-    <nav aria-label="Mobile main">
-      <ul>
-        <li><a href="#">Home</a></li>
-        <li><a href="#">Tools</a></li>
-        <li><a href="#">Pricing</a></li>
-        <li><a href="#">Contact</a></li>
-        <li><a class="nav-cta" href="#"><i class="fas fa-rocket"></i> Get Started</a></li>
-      </ul>
-    </nav>
-  </aside>
+    <div class="overlay" id="overlay"></div>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fas fa-image"></i>
+                <span>ImageCraft Pro</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Tools</a></li>
+                    <li><a href="#">Pricing</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#" class="nav-cta">Get Started</a></li>
+                </ul>
+            </nav>
+            <button class="hamburger" id="hamburger">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
 
-  <!-- Header -->
-  <header>
-    <div class="container header-wrap">
-      <div class="logo"><i class="fas fa-image"></i><span>ImageCraft Pro</span></div>
-
-      <nav aria-label="Main">
+    <div class="mobile-nav" id="mobileNav">
+        <button class="close-menu" id="closeMenu">
+            <i class="fas fa-times"></i>
+        </button>
         <ul>
-          <li><a href="#">Home</a></li>
-          <li><a href="#">Tools</a></li>
-          <li><a href="#">Pricing</a></li>
-          <li><a href="#">Contact</a></li>
-          <li><a class="nav-cta" href="#"><i class="fas fa-rocket"></i> Get Started</a></li>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Tools</a></li>
+            <li><a href="#">Pricing</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a href="#" class="nav-cta">Get Started</a></li>
         </ul>
-      </nav>
-
-      <button class="hamburger" id="hamburger"
-              aria-label="Open menu" aria-controls="mobileNav" aria-expanded="false">
-        <i class="fas fa-bars"></i>
-      </button>
     </div>
-  </header>
 
-  <!-- Hero -->
-  <section class="hero container">
-    <h1>Convert images <span style="color:var(--primary)">the right way</span></h1>
-    <p>Instant, private, and accurate format conversion in the browser—no fake fallbacks, no uploads, just real output formats selected with confidence.</p>
-  </section>
-
-  <!-- Converter -->
-  <main class="container">
-    <div class="converter" id="converter">
-      <!-- Upload -->
-      <div class="drop" id="drop">
-        <i class="fas fa-cloud-upload-alt"></i>
-        <h3>Drag & drop an image</h3>
-        <p style="color:var(--muted);margin:6px 0 12px">or</p>
-        <input type="file" id="file" accept="image/*" hidden>
-        <button class="btn btn-primary btn-icon" id="browse"><i class="fas fa-folder-open"></i> Browse files</button>
-      </div>
-
-      <section class="sections" id="sections" hidden>
-        <!-- Original -->
-        <div class="row">
-          <div class="col">
-            <div class="card">
-              <h3 style="margin:0 0 10px">Original</h3>
-              <img id="prevOriginal" alt="Original preview" class="preview" />
-              <div class="meta" id="infoOriginal"></div>
+    <div class="container">
+        <div class="ad-container" style="position: relative;">
+            <span class="ad-label">Advertisement</span>
+            <div class="ad-content">
+                <p>Premium Image Conversion Tool - Convert images in seconds!</p>
+                <!-- Ad code would go here -->
             </div>
-          </div>
-
-          <!-- Settings -->
-          <div class="col">
-            <div class="card">
-              <h3 style="margin:0 0 8px">Select output</h3>
-              <div id="formatGrid" class="formats" role="listbox" aria-label="Formats">
-                <!-- Formats populate via JS to reflect encoder availability -->
-              </div>
-
-              <div class="controls">
-                <div class="control">
-                  <label for="quality"><strong>Quality</strong></label>
-                  <input id="quality" type="range" min="0.1" max="1" step="0.05" value="0.9">
-                </div>
-              </div>
-
-              <div class="actions">
-                <button class="btn btn-primary btn-icon" id="convert" disabled>
-                  <i class="fas fa-cog"></i> Convert
-                </button>
-                <button class="btn btn-outline btn-icon" id="newImage">
-                  <i class="fas fa-redo"></i> New Image
-                </button>
-              </div>
-
-              <div class="progress" id="progressWrap" aria-live="polite">
-                <div class="progressbar-wrap" aria-hidden="true">
-                  <div class="progressbar" id="progressBar"></div>
-                </div>
-                <p id="progressText" class="meta" style="margin:8px 0 0;color:var(--muted)">Preparing…</p>
-              </div>
-            </div>
-          </div>
         </div>
+    </div>
 
-        <!-- Result -->
-        <div class="row" id="resultRow" hidden>
-          <div class="col">
-            <div class="card">
-              <h3 style="margin:0 0 10px">Converted</h3>
-              <img id="prevConverted" alt="Converted preview" class="preview" />
-              <div class="meta" id="infoConverted"></div>
-              <div class="actions">
-                <button class="btn btn-primary btn-icon" id="download">
-                  <i class="fas fa-download"></i> Download
-                </button>
-                <button class="btn btn-outline btn-icon" id="another">
-                  <i class="fas fa-wand-magic-sparkles"></i> New Conversion
-                </button>
-              </div>
+    <main class="container">
+        <section class="hero">
+            <h1>Convert Images <span>In Seconds</span></h1>
+            <p>Premium online tool to convert your images between various formats with maximum quality.</p>
+            
+            <div class="converter-box">
+                <div class="upload-area" id="dropArea">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h3>Drag & Drop your image here</h3>
+                    <p>or</p>
+                    <input type="file" id="fileInput" accept="image/*" hidden>
+                    <button class="btn" id="browseBtn">Browse Files</button>
+                </div>
+                
+                <div class="preview-section" id="previewSection">
+                    <div class="preview-container">
+                        <div class="preview-box">
+                            <h3>Original Image</h3>
+                            <img src="" alt="Original preview" class="preview-img" id="originalPreview">
+                            <div class="image-info" id="originalInfo"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary" id="newUploadBtn">
+                            <i class="fas fa-redo"></i> Upload Different Image
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="conversion-section" id="conversionSection">
+                    <h3 style="text-align: center; margin-bottom: 20px;">Select Output Format</h3>
+                    
+                    <div class="format-options" id="formatOptions">
+                        <div class="format-option" data-format="jpeg">
+                            <i class="fas fa-file-image"></i>
+                            <p>JPEG</p>
+                        </div>
+                        <div class="format-option" data-format="png">
+                            <i class="fas fa-file-image"></i>
+                            <p>PNG</p>
+                        </div>
+                        <div class="format-option" data-format="webp">
+                            <i class="fas fa-file-image"></i>
+                            <p>WebP</p>
+                        </div>
+                        <div class="format-option" data-format="gif">
+                            <i class="fas fa-file-image"></i>
+                            <p>GIF</p>
+                        </div>
+                        <div class="format-option" data-format="bmp">
+                            <i class="fas fa-file-image"></i>
+                            <p>BMP</p>
+                        </div>
+                        <div class="format-option" data-format="tiff">
+                            <i class="fas fa-file-image"></i>
+                            <p>TIFF</p>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn btn-disabled" id="convertBtn" disabled>
+                            <i class="fas fa-cog"></i> Convert Image
+                        </button>
+                    </div>
+                    
+                    <div class="progress-container" id="progressContainer">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                </div>
+                
+                <div class="preview-section" id="resultSection">
+                    <div class="preview-container">
+                        <div class="preview-box">
+                            <h3>Converted Image</h3>
+                            <img src="" alt="Converted preview" class="preview-img" id="convertedPreview">
+                            <div class="image-info" id="convertedInfo"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn" id="downloadBtn">
+                            <i class="fas fa-download"></i> Download Image
+                        </button>
+                        <button class="btn btn-secondary" id="newConvertBtn">
+                            <i class="fas fa-redo"></i> New Conversion
+                        </button>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="col ad">
-            <div>
-              <p style="margin:0 0 4px">Upgrade to speed up heavy codecs</p>
-              <small>Enable AVIF/HEIC via lightweight WASM bundles</small>
+        </section>
+    </main>
+
+    <div class="container">
+        <div class="content-with-ads">
+            <div class="main-content">
+                <div class="ad-container" style="position: relative;">
+                    <span class="ad-label">Advertisement</span>
+                    <div class="ad-content">
+                        <p>Upgrade to Premium for faster conversions and no ads!</p>
+                        <!-- Ad code would go here -->
+                    </div>
+                </div>
+
+                <section class="how-it-works">
+                    <div class="section-title">
+                        <h2>How It Works</h2>
+                        <p>Convert your images in just three simple steps</p>
+                    </div>
+                    
+                    <div class="steps">
+                        <div class="step">
+                            <i class="fas fa-upload"></i>
+                            <h3>Upload Your Image</h3>
+                            <p>Drag and drop your image or browse files from your device</p>
+                        </div>
+                        <div class="step">
+                            <i class="fas fa-cog"></i>
+                            <h3>Choose Format & Convert</h3>
+                            <p>Select your desired output format and click the convert button</p>
+                        </div>
+                        <div class="step">
+                            <i class="fas fa-download"></i>
+                            <h3>Download Result</h3>
+                            <p>Preview the converted image and download it in high quality</p>
+                        </div>
+                    </div>
+                </section>
             </div>
-          </div>
+            
+            <div class="ad-sidebar" style="position: relative;">
+                <span class="ad-label">Advertisement</span>
+                <div class="ad-content">
+                    <p>Premium Tools Available</p>
+                    <p>Batch conversion</p>
+                    <p>No quality loss</p>
+                    <!-- Ad code would go here -->
+                </div>
+            </div>
         </div>
-      </section>
     </div>
 
-    <!-- Minimal ad strip -->
-    <div class="ad" style="margin-top:18px">
-      Premium batch conversion • No tracking • Edge codecs
-    </div>
-  </main>
+    <footer>
+        <div class="container">
+            <div class="ad-container" style="position: relative; margin-top: 0;">
+                <span class="ad-label">Advertisement</span>
+                <div class="ad-content">
+                    <p>Try our premium features free for 14 days!</p>
+                    <!-- Ad code would go here -->
+                </div>
+            </div>
 
-  <!-- Footer -->
-  <footer>
-    <div class="container footer-inner">
-      <div>
-        <h3 style="margin-top:0;color:#fff">ImageCraft Pro</h3>
-        <p>Professional, private, in‑browser image conversions.</p>
-      </div>
-      <div>
-        <h4 style="color:#fff;margin:0 0 8px">Tools</h4>
-        <ul style="list-style:none;margin:0;padding:0;display:grid;gap:8px">
-          <li><a href="#">JPEG ↔ PNG</a></li>
-          <li><a href="#">WebP Converter</a></li>
-          <li><a href="#">GIF/TIFF (encoders)</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4 style="color:#fff;margin:0 0 8px">Company</h4>
-        <ul style="list-style:none;margin:0;padding:0;display:grid;gap:8px">
-          <li><a href="#">About</a></li>
-          <li><a href="#">Pricing</a></li>
-          <li><a href="#">Privacy</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4 style="color:#fff;margin:0 0 8px">Support</h4>
-        <ul style="list-style:none;margin:0;padding:0;display:grid;gap:8px">
-          <li><a href="#">Help Center</a></li>
-          <li><a href="#">FAQ</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="copyright">
-      <p>© 2025 ImageCraft Pro. All rights reserved.</p>
-    </div>
-  </footer>
+            <div class="footer-content">
+                <div class="footer-col">
+                    <h3>ImageCraft Pro</h3>
+                    <p>Premium image conversion tool for professionals and enthusiasts alike.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h3>Tools</h3>
+                    <ul>
+                        <li><a href="#">JPEG to PNG</a></li>
+                        <li><a href="#">PNG to JPEG</a></li>
+                        <li><a href="#">WebP Converter</a></li>
+                        <li><a href="#">GIF Converter</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Careers</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 ImageCraft Pro. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+<!-- GIF encoder (runtime + worker will be fetched inline to avoid CORS issues) -->
+<script src="https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.min.js"></script>
 
-  <!-- OPTIONAL ENCODERS
-    To enable true GIF and/or true TIFF output, load encoders before main script:
-    - GIF: a browser GIF encoder exposing `window.GIF` or `window.GIFEncoder`
-    - TIFF: a browser TIFF encoder exposing `window.UTIF` with encodeImage()
-    Keep their worker files next to the script if required by the encoder.
-  -->
+<!-- Canvas to BMP (pure client-side BMP encoding) -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-to-bmp@1.1.1/canvastobmp.min.js"></script>
 
-  <script>
-  (function(){
-    // Elements
-    const fileInput = document.getElementById('file');
-    const drop = document.getElementById('drop');
-    const browse = document.getElementById('browse');
-    const sections = document.getElementById('sections');
-
-    const prevOriginal = document.getElementById('prevOriginal');
-    const infoOriginal = document.getElementById('infoOriginal');
-    const prevConverted = document.getElementById('prevConverted');
-    const infoConverted = document.getElementById('infoConverted');
-
-    const formatGrid = document.getElementById('formatGrid');
-    const quality = document.getElementById('quality');
-    const convertBtn = document.getElementById('convert');
-    const newImageBtn = document.getElementById('newImage');
-
-    const progressWrap = document.getElementById('progressWrap');
+<!-- UTIF.js (TIFF encoder/decoder used for real TIFF output) -->
+<script src="https://cdn.jsdelivr.net/npm/utif@3.1.0/UTIF.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Elements (unchanged)
+    const dropArea = document.getElementById('dropArea');
+    const fileInput = document.getElementById('fileInput');
+    const browseBtn = document.getElementById('browseBtn');
+    const convertBtn = document.getElementById('convertBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const newConvertBtn = document.getElementById('newConvertBtn');
+    const newUploadBtn = document.getElementById('newUploadBtn');
+    const previewSection = document.getElementById('previewSection');
+    const conversionSection = document.getElementById('conversionSection');
+    const resultSection = document.getElementById('resultSection');
+    const originalPreview = document.getElementById('originalPreview');
+    const convertedPreview = document.getElementById('convertedPreview');
+    const originalInfo = document.getElementById('originalInfo');
+    const convertedInfo = document.getElementById('convertedInfo');
+    const formatOptions = document.querySelectorAll('.format-option');
     const progressBar = document.getElementById('progressBar');
-    const progressText = document.getElementById('progressText');
-    const resultRow = document.getElementById('resultRow');
-    const downloadBtn = document.getElementById('download');
-    const anotherBtn = document.getElementById('another');
-
-    const overlay = document.getElementById('overlay');
-    const mobileNav = document.getElementById('mobileNav');
+    const progressContainer = document.getElementById('progressContainer');
     const hamburger = document.getElementById('hamburger');
+    const mobileNav = document.getElementById('mobileNav');
     const closeMenu = document.getElementById('closeMenu');
+    const overlay = document.getElementById('overlay');
 
-    // State
-    let originalFile = null;
-    let originalBitmap = null;
-    let originalDataUrl = '';
+    let selectedFile = null;
+    let selectedFormat = '';
     let convertedBlob = null;
-    let convertedMime = '';
-    let convertedName = '';
-    let selectedFormat = null;
+    let convertedBlobURL = '';
+    let previewURLForImg = '';
+    let originalFileName = '';
+    let originalFileType = '';
 
-    // Detect format capabilities
-    const canEncode = {
-      jpeg: true, // via canvas
-      png: true,  // via canvas
-      webp: true, // widely supported; will check MIME echo at runtime
-      bmp: true,  // custom encoder below
-      gif: !!(window.GIF || window.GIFEncoder), // optional
-      tiff: !!(window.UTIF && window.UTIF.encodeImage) // optional
-    };
-
-    const FORMAT_LABELS = {
-      jpeg: 'JPEG',
-      png: 'PNG',
-      webp: 'WebP',
-      bmp: 'BMP',
-      gif: 'GIF',
-      tiff: 'TIFF'
-    };
-
-    const LOSSY = new Set(['jpeg','webp']);
-
-    // Build format grid according to capability
-    const order = ['jpeg','png','webp','bmp','gif','tiff'];
-    for(const fmt of order){
-      const enabled = canEncode[fmt];
-      const el = document.createElement('button');
-      el.className = 'format';
-      el.type = 'button';
-      el.setAttribute('role','option');
-      el.dataset.format = fmt;
-      el.innerHTML = `
-        <i class="fas fa-file-image" style="color:var(--primary);font-size:22px"></i>
-        <div style="margin-top:6px;font-weight:600">${FORMAT_LABELS[fmt]}</div>
-        ${enabled ? '' : '<small>encoder required</small>'}
-      `;
-      if(!enabled){
-        el.disabled = true;
-        el.style.opacity = .6;
-        el.style.cursor = 'not-allowed';
-      }
-      formatGrid.appendChild(el);
-    }
-
-    // Select format
-    formatGrid.addEventListener('click', (e)=>{
-      const btn = e.target.closest('.format');
-      if(!btn || btn.disabled) return;
-      [...formatGrid.children].forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-      selectedFormat = btn.dataset.format;
-      convertBtn.disabled = false;
-      convertBtn.classList.remove('btn-muted');
-      // Toggle quality slider for lossy codecs only
-      document.querySelector('.controls').style.display = LOSSY.has(selectedFormat) ? 'grid' : 'none';
+    // Mobile Menu (unchanged)
+    hamburger.addEventListener('click', () => {
+        mobileNav.classList.add('active');
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
     });
-
-    // Accessible mobile menu
-    hamburger.addEventListener('click', ()=>{
-      mobileNav.classList.add('active');
-      overlay.classList.add('active');
-      mobileNav.setAttribute('aria-hidden','false');
-      hamburger.setAttribute('aria-expanded','true');
-      document.body.style.overflow='hidden';
-      // move focus to close button
-      setTimeout(()=>closeMenu.focus(), 10);
-    });
-    function closePanel(){
-      mobileNav.classList.remove('active');
-      overlay.classList.remove('active');
-      mobileNav.setAttribute('aria-hidden','true');
-      hamburger.setAttribute('aria-expanded','false');
-      document.body.style.overflow='auto';
-      hamburger.focus();
+    function closeMobileMenu() {
+        mobileNav.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.style.overflow = 'auto';
     }
-    overlay.addEventListener('click', closePanel);
-    closeMenu.addEventListener('click', closePanel);
-    document.addEventListener('keydown', (e)=>{
-      if(e.key === 'Escape' && mobileNav.classList.contains('active')) closePanel();
-    });
+    closeMenu.addEventListener('click', closeMobileMenu);
+    overlay.addEventListener('click', closeMobileMenu);
 
-    // Upload handlers
-    browse.addEventListener('click', ()=>fileInput.click());
-    drop.addEventListener('dragover', (e)=>{e.preventDefault(); drop.style.borderColor='var(--primary)'});
-    drop.addEventListener('dragleave', ()=>{drop.style.borderColor='#d5dbef'});
-    drop.addEventListener('drop', (e)=>{
-      e.preventDefault();
-      if(e.dataTransfer.files?.) handleFile(e.dataTransfer.files);
-    });
-    fileInput.addEventListener('change', (e)=>{
-      if(e.target.files?.) handleFile(e.target.files);
-    });
-
-    newImageBtn.addEventListener('click', resetAll);
-    anotherBtn?.addEventListener('click', ()=>{
-      resultRow.hidden = true;
-      convertedBlob = null;
-      convertedMime = '';
-      convertedName = '';
-      [...formatGrid.children].forEach(b=>b.classList.remove('active'));
-      selectedFormat = null;
-      convertBtn.disabled = true;
-      convertBtn.classList.add('btn-muted');
-      progress(0,false);
-      prevConverted.removeAttribute('src');
-      infoConverted.innerHTML='';
-      window.scrollTo({top: converter.offsetTop - 20, behavior:'smooth'});
-    });
-
-    // Convert
-    convertBtn.addEventListener('click', async ()=>{
-      if(!originalBitmap || !selectedFormat) return;
-      progress(10,true,'Converting…');
-
-      try{
-        const blob = await convertBitmap(originalBitmap, selectedFormat, Number(quality.value));
-        convertedBlob = blob;
-        convertedMime = blob.type || guessMime(selectedFormat);
-        convertedName = getBaseName(originalFile?.name || 'image') + '.' + extForMime(convertedMime, selectedFormat);
-
-        const url = URL.createObjectURL(blob);
-        prevConverted.src = url;
-        infoConverted.innerHTML = fileInfo(convertedName, convertedMime, blob.size);
-
-        progress(100,false,'Done');
-        resultRow.hidden = false;
-        resultRow.scrollIntoView({behavior:'smooth', block:'start'});
-      }catch(err){
-        progress(0,false);
-        alert(err?.message || 'Conversion failed.');
-      }
-    });
-
-    downloadBtn.addEventListener('click', ()=>{
-      if(!convertedBlob) return;
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(convertedBlob);
-      a.download = convertedName || 'output';
-      document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(()=>URL.revokeObjectURL(a.href), 1500);
-    });
-
-    // Helpers
-    async function handleFile(file){
-      if(!file.type.startsWith('image/')){ alert('Please select an image file.'); return; }
-      resetAll();
-
-      originalFile = file;
-      const dataUrl = await readAsDataURL(file);
-      originalDataUrl = dataUrl;
-
-      // Prefer createImageBitmap for efficient decode
-      originalBitmap = await createImageBitmap(file);
-
-      // Show preview & info
-      prevOriginal.src = dataUrl;
-      infoOriginal.innerHTML = fileInfo(file.name, file.type, file.size);
-
-      sections.hidden = false;
-      drop.hidden = true;
-      window.scrollTo({top: sections.offsetTop - 8, behavior:'smooth'});
-    }
-
-    function resetAll(){
-      // state
-      originalFile = null;
-      originalBitmap?.close?.();
-      originalBitmap = null;
-      originalDataUrl = '';
-      convertedBlob = null;
-      convertedMime = '';
-      convertedName = '';
-      selectedFormat = null;
-      // ui
-      fileInput.value = '';
-      prevOriginal.removeAttribute('src');
-      infoOriginal.innerHTML = '';
-      prevConverted.removeAttribute('src');
-      infoConverted.innerHTML = '';
-      sections.hidden = true;
-      drop.hidden = false;
-      [...formatGrid.children].forEach(b=>b.classList.remove('active'));
-      convertBtn.disabled = true;
-      convertBtn.classList.add('btn-muted');
-      progress(0,false);
-    }
-
-    function progress(val=0, show=false, text=''){
-      progressWrap.style.display = show ? 'block' : (val>0 && val<100 ? 'block' : 'none');
-      progressBar.style.width = Math.max(0, Math.min(100, val)) + '%';
-      if(text) progressText.textContent = text;
-    }
-
-    // Core conversion
-    async function convertBitmap(bitmap, format, q=0.9){
-      // Draw to a canvas
-      const canvas = document.createElement('canvas');
-      canvas.width = bitmap.width;
-      canvas.height = bitmap.height;
-      const ctx = canvas.getContext('2d', {alpha: true, willReadFrequently: format==='bmp' || format==='tiff'});
-      ctx.drawImage(bitmap, 0, 0);
-
-      if(format === 'bmp'){
-        // Pure-JS BMP encoder
-        return canvasToBMP(canvas);
-      }
-
-      if(format === 'gif'){
-        const blob = await encodeGIF(canvas);
-        return blob;
-      }
-
-      if(format === 'tiff'){
-        const blob = await encodeTIFF(canvas);
-        return blob;
-      }
-
-      // Canvas-native encoders: jpeg, png, webp
-      const type = formatToMime(format);
-      const quality = LOSSY.has(format) ? q : undefined;
-      const blob = await canvasToBlob(canvas, type, quality);
-      // Validate true MIME support (no silent PNG fallback)
-      if(!blob || !blob.size) throw new Error('Failed to create image blob.');
-      if(type && blob.type && type !== 'image/png' && blob.type !== type){
-        // The browser ignored requested type; reject instead of faking
-        throw new Error(`This browser cannot encode ${FORMAT_LABELS[format]} natively.`);
-      }
-      return blob;
-    }
-
-    // Canvas to Blob as Promise
-    function canvasToBlob(canvas, type, quality){
-      return new Promise((resolve,reject)=>{
-        canvas.toBlob((b)=> b ? resolve(b) : reject(new Error('toBlob failed')), type, quality);
-      });
-    }
-
-    function readAsDataURL(file){
-      return new Promise((resolve,reject)=>{
-        const fr = new FileReader();
-        fr.onload = () => resolve(fr.result);
-        fr.onerror = reject;
-        fr.readAsDataURL(file);
-      });
-    }
-
-    function fileInfo(name, type, size){
-      const kb = Math.round(size/1024);
-      return `
-        <p><span>Name</span><span>${escapeHtml(name)}</span></p>
-        <p><span>Type</span><span>${escapeHtml(type || 'unknown')}</span></p>
-        <p><span>Size</span><span>${kb.toLocaleString()} KB</span></p>
-      `;
-    }
-
-    function getBaseName(name){
-      const i = name.lastIndexOf('.');
-      return i>0 ? name.slice(0,i) : name;
-    }
-
-    function extForMime(mime, fallbackFmt){
-      if(!mime) return fallbackFmt || 'img';
-      const map = {
-        'image/jpeg':'jpg',
-        'image/png':'png',
-        'image/webp':'webp',
-        'image/bmp':'bmp',
-        'image/gif':'gif',
-        'image/tiff':'tiff'
-      };
-      return map[mime] || fallbackFmt || 'img';
-    }
-
-    function guessMime(fmt){
-      return formatToMime(fmt) || 'application/octet-stream';
-    }
-
-    function formatToMime(fmt){
-      return ({
-        jpeg:'image/jpeg',
-        png:'image/png',
-        webp:'image/webp',
-        bmp:'image/bmp',
-        gif:'image/gif',
-        tiff:'image/tiff'
-      })[fmt] || '';
-    }
-
-    function escapeHtml(s=''){
-      return String(s)
-        .replaceAll('&','&amp;')
-        .replaceAll('<','&lt;')
-        .replaceAll('>','&gt;')
-        .replaceAll('"','&quot;')
-        .replaceAll("'","&#039;");
-    }
-
-    // BMP Encoder (24-bit, top-down)
-    function canvasToBMP(canvas){
-      const w = canvas.width, h = canvas.height;
-      const ctx = canvas.getContext('2d');
-      const { data:rgba } = ctx.getImageData(0,0,w,h);
-      const rowBytes = Math.floor((24 * w + 31) / 32) * 4; // padded row
-      const pixelArraySize = rowBytes * h;
-      const fileSize = 54 + pixelArraySize;
-      const buffer = new ArrayBuffer(fileSize);
-      const dv = new DataView(buffer);
-      let p = 0;
-
-      // File header 'BM'
-      dv.setUint8(p++, 0x42); dv.setUint8(p++, 0x4D);
-      dv.setUint32(p, fileSize, true); p+=4;
-      dv.setUint16(p, 0, true); p+=2;
-      dv.setUint16(p, 0, true); p+=2;
-      dv.setUint32(p, 54, true); p+=4;
-
-      // DIB header (BITMAPINFOHEADER)
-      dv.setUint32(p, 40, true); p+=4;        // header size
-      dv.setInt32(p, w, true); p+=4;          // width
-      dv.setInt32(p, -h, true); p+=4;         // negative height => top-down
-      dv.setUint16(p, 1, true); p+=2;         // planes
-      dv.setUint16(p, 24, true); p+=2;        // bpp
-      dv.setUint32(p, 0, true); p+=4;         // compression BI_RGB
-      dv.setUint32(p, pixelArraySize, true); p+=4;
-      dv.setInt32(p, 2835, true); p+=4;       // x ppm (72dpi)
-      dv.setInt32(p, 2835, true); p+=4;       // y ppm
-      dv.setUint32(p, 0, true); p+=4;         // colors used
-      dv.setUint32(p, 0, true); p+=4;         // important colors
-
-      // Pixels (BGR with row padding)
-      let offset = 54;
-      const pad = rowBytes - w*3;
-      for(let y=0; y<h; y++){
-        for(let x=0; x<w; x++){
-          const i = (y*w + x) * 4;
-          const r = rgba[i], g = rgba[i+1], b = rgba[i+2];
-          dv.setUint8(offset++, b);
-          dv.setUint8(offset++, g);
-          dv.setUint8(offset++, r);
-        }
-        for(let k=0; k<pad; k++) dv.setUint8(offset++, 0);
-      }
-      return new Blob([buffer], {type:'image/bmp'});
-    }
-
-    // Optional: GIF (single frame) using an external encoder
-    async function encodeGIF(canvas){
-      // Support either gif.js (window.GIF) or a global GIFEncoder compatible API
-      if(window.GIF){
-        return new Promise((resolve, reject)=>{
-          const gif = new window.GIF({
-            workers: 2,
-            quality: 10,
-            width: canvas.width,
-            height: canvas.height,
-            workerScript: 'gif.worker.js' // keep the worker next to the script if required by chosen lib
-          });
-          gif.addFrame(canvas, {copy:true, delay:0});
-          gif.on('finished', (blob)=> resolve(blob));
-          gif.on('abort', ()=> reject(new Error('GIF encoding aborted')));
-          gif.render();
+    // Selection UI (unchanged visuals)
+    formatOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            formatOptions.forEach(opt => opt.classList.remove('active'));
+            option.classList.add('active');
+            selectedFormat = option.getAttribute('data-format');
+            convertBtn.disabled = false;
+            convertBtn.classList.remove('btn-disabled');
         });
-      }else if(window.GIFEncoder){
-        // Example for a GIFEncoder API variant that returns binary data
-        const ctx = canvas.getContext('2d');
-        const { data, width, height } = ctx.getImageData(0,0,canvas.width,canvas.height);
-        const enc = new window.GIFEncoder(width, height);
-        enc.start(); enc.setRepeat(0); enc.setDelay(0); enc.setQuality(10);
-        enc.addFrame(ctx); enc.finish();
-        const binary = enc.stream().getData();
-        const bytes = new Uint8Array(binary.length);
-        for(let i=0;i<binary.length;i++) bytes[i] = binary.charCodeAt(i);
-        return new Blob([bytes], {type:'image/gif'});
-      }
-      throw new Error('GIF encoder not loaded. Please include a browser GIF encoder.');
+    });
+
+    // Drag-drop and browse (unchanged)
+    browseBtn.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', handleFileSelect);
+    dropArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropArea.style.borderColor = 'var(--primary)';
+        dropArea.style.backgroundColor = '#f8f9fa';
+    });
+    dropArea.addEventListener('dragleave', () => {
+        dropArea.style.borderColor = '#d0d7de';
+        dropArea.style.backgroundColor = 'transparent';
+    });
+    dropArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropArea.style.borderColor = '#d0d7de';
+        dropArea.style.backgroundColor = 'transparent';
+        if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files);
+    });
+
+    // Actions
+    convertBtn.addEventListener('click', () => convertImage().catch(showConversionError));
+    downloadBtn.addEventListener('click', downloadImage);
+    newConvertBtn.addEventListener('click', resetConverter);
+    newUploadBtn.addEventListener('click', resetConverter);
+
+    function handleFileSelect(e) {
+        if (e.target.files.length) handleFile(e.target.files);
     }
 
-    // Optional: TIFF via UTIF.encodeImage (baseline, uncompressed)
-    async function encodeTIFF(canvas){
-      if(!(window.UTIF && window.UTIF.encodeImage)) throw new Error('TIFF encoder not loaded. Please include UTIF with encodeImage().');
-      const ctx = canvas.getContext('2d', {willReadFrequently:true});
-      const { data, width, height } = ctx.getImageData(0,0,canvas.width,canvas.height);
-      // UTIF expects Uint8Array RGBA, returns ArrayBuffer
-      const ab = window.UTIF.encodeImage(new Uint8Array(data.buffer), width, height);
-      return new Blob([ab], {type:'image/tiff'});
+    function handleFile(file) {
+        if (!file.type.match('image.*')) {
+            alert('Please select an image file.');
+            return;
+        }
+        selectedFile = file;
+        originalFileName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+        originalFileType = file.type.split('/')[1] || '';
+
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            originalPreview.src = ev.target.result;
+            const sizeKB = Math.round(file.size / 1024);
+            originalInfo.innerHTML = `
+                <p><strong>Name:</strong> <span>${file.name}</span></p>
+                <p><strong>Type:</strong> <span>${file.type}</span></p>
+                <p><strong>Size:</strong> <span>${sizeKB} KB</span></p>
+            `;
+        };
+        reader.readAsDataURL(file);
+
+        // Show sections (unchanged layout)
+        dropArea.style.display = 'none';
+        previewSection.style.display = 'block';
+        conversionSection.style.display = 'block';
+        resultSection.style.display = 'none';
+
+        // Reset selection
+        formatOptions.forEach(opt => opt.classList.remove('active'));
+        selectedFormat = '';
+        convertBtn.disabled = true;
+        convertBtn.classList.add('btn-disabled');
+
+        // Reset outputs
+        clearConverted();
     }
-  })();
-  </script>
+
+    function clearConverted() {
+        if (convertedBlobURL) URL.revokeObjectURL(convertedBlobURL);
+        convertedBlob = null;
+        convertedBlobURL = '';
+        previewURLForImg = '';
+        convertedPreview.src = '';
+        convertedInfo.innerHTML = '';
+        progressBar.style.width = '0%';
+        progressContainer.style.display = 'none';
+    }
+
+    function showProgress(pct) {
+        progressContainer.style.display = 'block';
+        progressBar.style.width = pct + '%';
+    }
+
+    function canvasFromImage(img) {
+        const c = document.createElement('canvas');
+        c.width = img.naturalWidth || img.width || 0;
+        c.height = img.naturalHeight || img.height || 0;
+        const ctx = c.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        return c;
+    }
+
+    function dataURLtoBlob(dataURL) {
+        const [meta, base64] = dataURL.split(',');
+        const mime = meta.match(/data:(.*?);base64/)[1] || 'application/octet-stream';
+        const bin = atob(base64);
+        const len = bin.length;
+        const u8 = new Uint8Array(len);
+        for (let i = 0; i < len; i++) u8[i] = bin.charCodeAt(i);
+        return new Blob([u8], { type: mime });
+    }
+
+    function toBlobFromCanvas(canvas, type, quality) {
+        return new Promise((resolve) => {
+            if (canvas.toBlob) {
+                canvas.toBlob((blob) => {
+                    if (blob) return resolve(blob);
+                    // Fallback via dataURL if browser returns null
+                    const dataURL = canvas.toDataURL(type, typeof quality === 'number' ? quality : undefined);
+                    resolve(dataURLtoBlob(dataURL));
+                }, type, quality);
+            } else {
+                const dataURL = canvas.toDataURL(type, typeof quality === 'number' ? quality : undefined);
+                resolve(dataURLtoBlob(dataURL));
+            }
+        });
+    }
+
+    // Load GIF worker script as blob URL to avoid cross-origin Worker issues
+    let gifWorkerURLPromise = null;
+    function getGifWorkerURL() {
+        if (!gifWorkerURLPromise) {
+            gifWorkerURLPromise = fetch('https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js')
+                .then(r => {
+                    if (!r.ok) throw new Error('Failed to load GIF worker');
+                    return r.blob();
+                })
+                .then(blob => URL.createObjectURL(blob));
+        }
+        return gifWorkerURLPromise;
+    }
+
+    async function encodeGIF(canvas) {
+        const workerScript = await getGifWorkerURL();
+        return new Promise((resolve, reject) => {
+            try {
+                const gif = new GIF({
+                    workers: 2,
+                    workerScript,
+                    quality: 10,
+                    width: canvas.width,
+                    height: canvas.height
+                });
+                // Single-frame GIF from current canvas
+                gif.addFrame(canvas, { copy: true, delay: 0 });
+                gif.on('finished', (blob) => resolve(blob));
+                gif.render();
+            } catch (e) {
+                reject(e);
+            }
+        });
+    }
+
+    async function encodeBMP(canvas) {
+        return new Promise((resolve, reject) => {
+            try {
+                CanvasToBMP.toBlob(canvas, (blob) => {
+                    if (blob) resolve(blob);
+                    else reject(new Error('BMP encode failed'));
+                });
+            } catch (e) {
+                reject(e);
+            }
+        });
+    }
+
+    async function encodeTIFF(canvas) {
+        const ctx = canvas.getContext('2d');
+        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const rgba = imgData.data; // Uint8ClampedArray
+        // UTIF.encodeImage expects a Uint8Array with RGBA
+        const rgba8 = (rgba instanceof Uint8Array) ? rgba : new Uint8Array(rgba.buffer);
+        const ab = UTIF.encodeImage(rgba8, canvas.width, canvas.height);
+        return new Blob([ab], { type: 'image/tiff' });
+    }
+
+    async function convertImage() {
+        if (!selectedFile || !selectedFormat) return;
+
+        clearConverted();
+        showProgress(15);
+
+        // Prepare canvas from original
+        const canvas = canvasFromImage(originalPreview);
+
+        let blob = null;
+        let mime = '';
+        let downloadExt = selectedFormat;
+
+        try {
+            switch (selectedFormat) {
+                case 'jpeg':
+                    mime = 'image/jpeg';
+                    showProgress(35);
+                    blob = await toBlobFromCanvas(canvas, mime, 0.9);
+                    break;
+                case 'png':
+                    mime = 'image/png';
+                    showProgress(35);
+                    blob = await toBlobFromCanvas(canvas, mime);
+                    break;
+                case 'webp':
+                    mime = 'image/webp';
+                    showProgress(35);
+                    blob = await toBlobFromCanvas(canvas, mime, 0.9);
+                    break;
+                case 'gif':
+                    mime = 'image/gif';
+                    showProgress(35);
+                    blob = await encodeGIF(canvas);
+                    break;
+                case 'bmp':
+                    mime = 'image/bmp';
+                    showProgress(35);
+                    blob = await encodeBMP(canvas);
+                    break;
+                case 'tiff':
+                    mime = 'image/tiff';
+                    showProgress(35);
+                    blob = await encodeTIFF(canvas);
+                    break;
+                default:
+                    throw new Error('Unsupported format');
+            }
+
+            if (!blob) throw new Error('Encoding returned empty blob');
+
+            showProgress(75);
+
+            // Create URLs for preview and download
+            convertedBlob = blob;
+            convertedBlobURL = URL.createObjectURL(blob);
+
+            // Some browsers cannot display TIFF in <img>, so use PNG just for preview but keep real TIFF for download
+            if (selectedFormat === 'tiff') {
+                const pngPreviewBlob = await toBlobFromCanvas(canvas, 'image/png');
+                previewURLForImg = URL.createObjectURL(pngPreviewBlob);
+                convertedPreview.src = previewURLForImg;
+            } else {
+                convertedPreview.src = convertedBlobURL;
+            }
+
+            // File info (use blob.size for accuracy)
+            const sizeKB = Math.max(1, Math.round(blob.size / 1024));
+
+            // Ensure extension matches true mime produced
+            if (blob.type === 'image/png') downloadExt = 'png';
+            else if (blob.type === 'image/jpeg') downloadExt = 'jpeg';
+            else if (blob.type === 'image/webp') downloadExt = 'webp';
+            else if (blob.type === 'image/gif') downloadExt = 'gif';
+            else if (blob.type === 'image/bmp') downloadExt = 'bmp';
+            else if (blob.type === 'image/tiff') downloadExt = 'tiff';
+
+            convertedInfo.innerHTML = `
+                <p><strong>Name:</strong> <span>${originalFileName}.${downloadExt}</span></p>
+                <p><strong>Type:</strong> <span>${blob.type || mime}</span></p>
+                <p><strong>Size:</strong> <span>${sizeKB} KB</span></p>
+            `;
+
+            // Toggle sections
+            conversionSection.style.display = 'none';
+            resultSection.style.display = 'block';
+            progressContainer.style.display = 'none';
+            resultSection.scrollIntoView({ behavior: 'smooth' });
+        } catch (e) {
+            showConversionError(e);
+        }
+    }
+
+    function showConversionError(e) {
+        progressContainer.style.display = 'none';
+        alert('Conversion failed: ' + (e && e.message ? e.message : 'Unknown error'));
+    }
+
+    function downloadImage() {
+        if (!convertedBlob) return;
+        let fileExtension = selectedFormat;
+
+        // Trust the blob.type to decide extension
+        if (convertedBlob.type === 'image/png') fileExtension = 'png';
+        else if (convertedBlob.type === 'image/jpeg') fileExtension = 'jpeg';
+        else if (convertedBlob.type === 'image/webp') fileExtension = 'webp';
+        else if (convertedBlob.type === 'image/gif') fileExtension = 'gif';
+        else if (convertedBlob.type === 'image/bmp') fileExtension = 'bmp';
+        else if (convertedBlob.type === 'image/tiff') fileExtension = 'tiff';
+
+        const link = document.createElement('a');
+        link.href = convertedBlobURL || URL.createObjectURL(convertedBlob);
+        link.download = `${originalFileName}.${fileExtension}`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    function resetConverter() {
+        selectedFile = null;
+        originalFileName = '';
+        originalFileType = '';
+        fileInput.value = '';
+
+        dropArea.style.display = 'block';
+        previewSection.style.display = 'none';
+        conversionSection.style.display = 'none';
+        resultSection.style.display = 'none';
+
+        formatOptions.forEach(opt => opt.classList.remove('active'));
+        selectedFormat = '';
+        convertBtn.disabled = true;
+        convertBtn.classList.add('btn-disabled');
+
+        originalPreview.src = '';
+        clearConverted();
+    }
+});
+</script>
+
+                
 </body>
 </html>
