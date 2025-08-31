@@ -1,961 +1,375 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ImageCraft Pro | Premium Image Converter</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #4361ee;
-            --primary-dark: #3a56d4;
-            --secondary: #6c757d;
-            --dark: #1e2a4a;
-            --light: #f8f9fa;
-            --success: #28a745;
-            --border-radius: 12px;
-            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            --transition: all 0.3s ease;
-            --container-width: 1200px;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
-
-        body {
-            background-color: #f5f7ff;
-            color: #333;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        .container {
-            width: 100%;
-            max-width: var(--container-width);
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Header */
-        header {
-            background: white;
-            color: var(--dark);
-            padding: 20px 0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary);
-            z-index: 101;
-        }
-
-        .logo i {
-            font-size: 28px;
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 30px;
-        }
-
-        nav a {
-            color: var(--dark);
-            text-decoration: none;
-            font-weight: 500;
-            transition: var(--transition);
-            position: relative;
-        }
-
-        nav a:after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -5px;
-            left: 0;
-            background-color: var(--primary);
-            transition: var(--transition);
-        }
-
-        nav a:hover {
-            color: var(--primary);
-        }
-
-        nav a:hover:after {
-            width: 100%;
-        }
-
-        .nav-cta {
-            background: var(--primary);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 50px;
-        }
-
-        .nav-cta:hover {
-            background: var(--primary-dark);
-            color: white;
-        }
-
-        .nav-cta:after {
-            display: none;
-        }
-
-        /* Hamburger Menu */
-        .hamburger {
-            display: none;
-            cursor: pointer;
-            background: none;
-            border: none;
-            font-size: 24px;
-            color: var(--dark);
-            z-index: 101;
-        }
-
-        /* Hero Section */
-        .hero {
-            padding: 80px 0 60px;
-            text-align: center;
-        }
-
-        .hero h1 {
-            font-size: 48px;
-            margin-bottom: 20px;
-            color: var(--dark);
-            line-height: 1.2;
-        }
-
-        .hero h1 span {
-            color: var(--primary);
-        }
-
-        .hero p {
-            font-size: 20px;
-            color: var(--secondary);
-            max-width: 700px;
-            margin: 0 auto 40px;
-        }
-
-        /* Converter Box */
-        .converter-box {
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            padding: 40px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .upload-area {
-            border: 2px dashed #d0d7de;
-            border-radius: var(--border-radius);
-            padding: 40px 20px;
-            text-align: center;
-            margin-bottom: 30px;
-            transition: var(--transition);
-            cursor: pointer;
-        }
-
-        .upload-area:hover {
-            border-color: var(--primary);
-            transform: translateY(-5px);
-        }
-
-        .upload-area i {
-            font-size: 48px;
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-
-        .upload-area h3 {
-            margin-bottom: 10px;
-            color: var(--dark);
-        }
-
-        .upload-area p {
-            color: var(--secondary);
-            margin-bottom: 15px;
-        }
-
-        .btn {
-            display: inline-block;
-            background: var(--primary);
-            color: white;
-            padding: 14px 32px;
-            border-radius: 50px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            transition: var(--transition);
-            text-decoration: none;
-            font-size: 16px;
-        }
-
-        .btn:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.15);
-        }
-
-        .btn-secondary {
-            background: white;
-            color: var(--primary);
-            border: 2px solid var(--primary);
-        }
-
-        .btn-secondary:hover {
-            background: #f5f7ff;
-        }
-
-        .btn-disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        .btn-disabled:hover {
-            background: #ccc;
-            transform: none;
-            box-shadow: none;
-        }
-
-        /* Format Options */
-        .format-options {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin: 30px 0;
-        }
-
-        .format-option {
-            padding: 20px;
-            border: 2px solid #eaeaea;
-            border-radius: var(--border-radius);
-            text-align: center;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .format-option:hover {
-            border-color: var(--primary);
-            transform: translateY(-3px);
-        }
-
-        .format-option.active {
-            border-color: var(--primary);
-            background: #f0f5ff;
-            transform: translateY(-3px);
-        }
-
-        .format-option i {
-            font-size: 32px;
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-
-        .format-option p {
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        /* Preview Section */
-        .preview-section {
-            display: none;
-            margin-top: 40px;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .preview-container {
-            display: flex;
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-
-        .preview-box {
-            flex: 1;
-            text-align: center;
-        }
-
-        .preview-box h3 {
-            margin-bottom: 15px;
-            color: var(--dark);
-            font-weight: 600;
-        }
-
-        .preview-img {
-            width: 100%;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            max-height: 300px;
-            object-fit: contain;
-        }
-
-        .image-info {
-            background: #f8f9fa;
-            border-radius: var(--border-radius);
-            padding: 20px;
-            margin-top: 20px;
-            text-align: left;
-        }
-
-        .image-info p {
-            margin-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .image-info span {
-            font-weight: 500;
-            color: var(--dark);
-        }
-
-        .action-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        /* Conversion Section */
-        .conversion-section {
-            display: none;
-            margin-top: 30px;
-            animation: fadeIn 0.5s ease;
-        }
-
-        /* Progress Bar */
-        .progress-container {
-            width: 100%;
-            height: 8px;
-            background: #f0f0f0;
-            border-radius: 4px;
-            margin: 20px 0;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: var(--primary);
-            border-radius: 4px;
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-
-        /* Ad Placeholders */
-        .ad-container {
-            width: 100%;
-            background: #f8f9fa;
-            border-radius: var(--border-radius);
-            margin: 40px 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 120px;
-            color: var(--secondary);
-            text-align: center;
-            box-shadow: var(--box-shadow);
-        }
-
-        .ad-label {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            font-size: 10px;
-            color: var(--secondary);
-            background: rgba(255, 255, 255, 0.8);
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-
-        .ad-sidebar {
-            width: 300px;
-            min-height: 600px;
-            background: #f8f9fa;
-            border-radius: var(--border-radius);
-            margin-left: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: var(--secondary);
-            text-align: center;
-            box-shadow: var(--box-shadow);
-            position: relative;
-        }
-
-        .ad-content {
-            width: 100%;
-            padding: 20px;
-        }
-
-        .content-with-ads {
-            display: flex;
-            justify-content: space-between;
-            margin: 60px 0;
-        }
-
-        .main-content {
-            flex: 1;
-        }
-
-        /* How It Works Section */
-        .how-it-works {
-            padding: 80px 0;
-            background: white;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-
-        .section-title h2 {
-            font-size: 36px;
-            color: var(--dark);
-            margin-bottom: 15px;
-        }
-
-        .section-title p {
-            color: var(--secondary);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .steps {
-            display: flex;
-            gap: 30px;
-        }
-
-        .step {
-            flex: 1;
-            text-align: center;
-            padding: 30px;
-            border-radius: var(--border-radius);
-            background: #f8f9fa;
-            transition: var(--transition);
-        }
-
-        .step:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--box-shadow);
-        }
-
-        .step i {
-            font-size: 40px;
-            color: var(--primary);
-            margin-bottom: 20px;
-        }
-
-        .step h3 {
-            margin-bottom: 15px;
-            color: var(--dark);
-        }
-
-        .step p {
-            color: var(--secondary);
-        }
-
-        /* Footer */
-        footer {
-            background: var(--dark);
-            color: white;
-            padding: 60px 0 30px;
-        }
-
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 40px;
-            margin-bottom: 40px;
-        }
-
-        .footer-col {
-            flex: 1;
-            min-width: 200px;
-        }
-
-        .footer-col h3 {
-            font-size: 18px;
-            margin-bottom: 20px;
-            color: white;
-        }
-
-        .footer-col ul {
-            list-style: none;
-        }
-
-        .footer-col ul li {
-            margin-bottom: 12px;
-        }
-
-        .footer-col a {
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            transition: var(--transition);
-        }
-
-        .footer-col a:hover {
-            color: white;
-        }
-
-        .social-icons {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .social-icons a {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            transition: var(--transition);
-        }
-
-        .social-icons a:hover {
-            background: var(--primary);
-            transform: translateY(-3px);
-        }
-
-        .copyright {
-            text-align: center;
-            padding-top: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Mobile Nav */
-        .mobile-nav {
-            position: fixed;
-            top: 0;
-            right: -100%;
-            width: 80%;
-            max-width: 400px;
-            height: 100vh;
-            background: white;
-            z-index: 1000;
-            padding: 80px 30px 30px;
-            box-shadow: -5px 0 25px rgba(0, 0, 0, 0.1);
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .mobile-nav.active {
-            right: 0;
-        }
-        
-        .mobile-nav ul {
-            list-style: none;
-        }
-        
-        .mobile-nav ul li {
-            margin-bottom: 20px;
-        }
-        
-        .mobile-nav a {
-            color: var(--dark);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 18px;
-            display: block;
-            padding: 12px 0;
-            border-bottom: 1px solid #f0f0f0;
-            transition: var(--transition);
-        }
-        
-        .mobile-nav a:hover {
-            color: var(--primary);
-            padding-left: 10px;
-        }
-        
-        .close-menu {
-            position: absolute;
-            top: 25px;
-            right: 25px;
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: var(--dark);
-            transition: var(--transition);
-        }
-        
-        .close-menu:hover {
-            color: var(--primary);
-            transform: rotate(90deg);
-        }
-        
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-            opacity: 0;
-            visibility: hidden;
-            transition: var(--transition);
-        }
-        
-        .overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        /* Responsive */
-        @media (max-width: 992px) {
-            .steps {
-                flex-direction: column;
-            }
-            
-            .preview-container {
-                flex-direction: column;
-            }
-            
-            .format-options {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .content-with-ads {
-                flex-direction: column;
-            }
-            
-            .ad-sidebar {
-                width: 100%;
-                min-height: 120px;
-                margin: 40px 0 0 0;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 36px;
-            }
-            
-            .hero p {
-                font-size: 18px;
-            }
-            
-            nav ul {
-                display: none;
-            }
-            
-            .hamburger {
-                display: block;
-            }
-            
-            .format-options {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .converter-box {
-                padding: 25px;
-            }
-            
-            .upload-area {
-                padding: 30px 15px;
-            }
-            
-            .action-buttons {
-                flex-direction: column;
-            }
-            
-            .btn {
-                width: 100%;
-                text-align: center;
-            }
-            
-            .mobile-nav {
-                width: 85%;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ImageCraft Pro | Premium Image Converter</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a56d4;
+      --secondary: #6c757d;
+      --dark: #1e2a4a;
+      --light: #f8f9fa;
+      --success: #28a745;
+      --border-radius: 12px;
+      --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      --transition: all 0.3s ease;
+      --container-width: 1200px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    body { background-color: #f5f7ff; color: #333; line-height: 1.6; overflow-x: hidden; }
+    .container { width: 100%; max-width: var(--container-width); margin: 0 auto; padding: 0 20px; }
+
+    /* Header */
+    header { background: white; color: var(--dark); padding: 20px 0; box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
+    .header-content { display: flex; justify-content: space-between; align-items: center; }
+    .logo { display: flex; align-items: center; gap: 12px; font-size: 24px; font-weight: 700; color: var(--primary); z-index: 101; }
+    .logo i { font-size: 28px; }
+    nav ul { display: flex; list-style: none; gap: 30px; }
+    nav a { color: var(--dark); text-decoration: none; font-weight: 500; transition: var(--transition); position: relative; }
+    nav a:after { content: ''; position: absolute; width: 0; height: 2px; bottom: -5px; left: 0; background-color: var(--primary); transition: var(--transition); }
+    nav a:hover { color: var(--primary); }
+    nav a:hover:after { width: 100%; }
+    .nav-cta { background: var(--primary); color: white; padding: 10px 20px; border-radius: 50px; }
+    .nav-cta:hover { background: var(--primary-dark); color: white; }
+    .nav-cta:after { display: none; }
+
+    /* Hamburger */
+    .hamburger { display: none; cursor: pointer; background: none; border: none; font-size: 24px; color: var(--dark); z-index: 101; }
+
+    /* Hero */
+    .hero { padding: 80px 0 60px; text-align: center; }
+    .hero h1 { font-size: 48px; margin-bottom: 20px; color: var(--dark); line-height: 1.2; }
+    .hero h1 span { color: var(--primary); }
+    .hero p { font-size: 20px; color: var(--secondary); max-width: 700px; margin: 0 auto 40px; }
+
+    /* Converter Box */
+    .converter-box { background: white; border-radius: var(--border-radius); box-shadow: var(--box-shadow); padding: 40px; max-width: 800px; margin: 0 auto; }
+    .upload-area { border: 2px dashed #d0d7de; border-radius: var(--border-radius); padding: 40px 20px; text-align: center; margin-bottom: 30px; transition: var(--transition); cursor: pointer; }
+    .upload-area:hover { border-color: var(--primary); transform: translateY(-5px); }
+    .upload-area i { font-size: 48px; color: var(--primary); margin-bottom: 15px; }
+    .upload-area h3 { margin-bottom: 10px; color: var(--dark); }
+    .upload-area p { color: var(--secondary); margin-bottom: 15px; }
+
+    .btn { display: inline-block; background: var(--primary); color: white; padding: 14px 32px; border-radius: 50px; border: none; cursor: pointer; font-weight: 600; transition: var(--transition); text-decoration: none; font-size: 16px; }
+    .btn:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(67,97,238,0.15); }
+    .btn-secondary { background: white; color: var(--primary); border: 2px solid var(--primary); }
+    .btn-secondary:hover { background: #f5f7ff; }
+    .btn-disabled { background: #ccc; cursor: not-allowed; }
+    .btn-disabled:hover { background: #ccc; transform: none; box-shadow: none; }
+
+    /* Format Options */
+    .format-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 30px 0; }
+    .format-option { padding: 20px; border: 2px solid #eaeaea; border-radius: var(--border-radius); text-align: center; cursor: pointer; transition: var(--transition); }
+    .format-option:hover { border-color: var(--primary); transform: translateY(-3px); }
+    .format-option.active { border-color: var(--primary); background: #f0f5ff; transform: translateY(-3px); }
+    .format-option i { font-size: 32px; color: var(--primary); margin-bottom: 15px; }
+    .format-option p { font-weight: 600; color: var(--dark); }
+
+    /* Preview Sections */
+    .preview-section { display: none; margin-top: 40px; animation: fadeIn 0.5s ease; }
+    .preview-container { display: flex; gap: 30px; margin-bottom: 30px; }
+    .preview-box { flex: 1; text-align: center; }
+    .preview-box h3 { margin-bottom: 15px; color: var(--dark); font-weight: 600; }
+    .preview-img { width: 100%; border-radius: var(--border-radius); box-shadow: var(--box-shadow); max-height: 300px; object-fit: contain; }
+    .image-info { background: #f8f9fa; border-radius: var(--border-radius); padding: 20px; margin-top: 20px; text-align: left; }
+    .image-info p { margin-bottom: 8px; display: flex; justify-content: space-between; }
+    .image-info span { font-weight: 500; color: var(--dark); }
+
+    .action-buttons { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+
+    /* Progress */
+    .progress-container { width: 100%; height: 8px; background: #f0f0f0; border-radius: 4px; margin: 20px 0; overflow: hidden; display: none; }
+    .progress-bar { height: 100%; background: var(--primary); border-radius: 4px; width: 0%; transition: width 0.3s ease; }
+
+    /* Ads */
+    .ad-container { width: 100%; background: #f8f9fa; border-radius: var(--border-radius); margin: 40px 0; display: flex; justify-content: center; align-items: center; min-height: 120px; color: var(--secondary); text-align: center; box-shadow: var(--box-shadow); position: relative; }
+    .ad-label { position: absolute; top: 8px; right: 8px; font-size: 10px; color: var(--secondary); background: rgba(255,255,255,0.8); padding: 2px 6px; border-radius: 4px; }
+    .ad-sidebar { width: 300px; min-height: 600px; background: #f8f9fa; border-radius: var(--border-radius); margin-left: 40px; display: flex; justify-content: center; align-items: center; color: var(--secondary); text-align: center; box-shadow: var(--box-shadow); position: relative; }
+    .ad-content { width: 100%; padding: 20px; }
+    .content-with-ads { display: flex; justify-content: space-between; margin: 60px 0; }
+    .main-content { flex: 1; }
+
+    /* How it works */
+    .how-it-works { padding: 80px 0; background: white; }
+    .section-title { text-align: center; margin-bottom: 50px; }
+    .section-title h2 { font-size: 36px; color: var(--dark); margin-bottom: 15px; }
+    .section-title p { color: var(--secondary); max-width: 600px; margin: 0 auto; }
+    .steps { display: flex; gap: 30px; }
+    .step { flex: 1; text-align: center; padding: 30px; border-radius: var(--border-radius); background: #f8f9fa; transition: var(--transition); }
+    .step:hover { transform: translateY(-5px); box-shadow: var(--box-shadow); }
+    .step i { font-size: 40px; color: var(--primary); margin-bottom: 20px; }
+    .step h3 { margin-bottom: 15px; color: var(--dark); }
+    .step p { color: var(--secondary); }
+
+    /* Footer */
+    footer { background: var(--dark); color: white; padding: 60px 0 30px; }
+    .footer-content { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px; margin-bottom: 40px; }
+    .footer-col { flex: 1; min-width: 200px; }
+    .footer-col h3 { font-size: 18px; margin-bottom: 20px; color: white; }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 12px; }
+    .footer-col a { color: rgba(255,255,255,0.7); text-decoration: none; transition: var(--transition); }
+    .footer-col a:hover { color: white; }
+    .social-icons { display: flex; gap: 15px; margin-top: 20px; }
+    .social-icons a { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; background: rgba(255,255,255,0.1); border-radius: 50%; transition: var(--transition); }
+    .social-icons a:hover { background: var(--primary); transform: translateY(-3px); }
+    .copyright { text-align: center; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); }
+
+    /* Animations */
+    @keyframes fadeIn { from {opacity: 0; transform: translateY(20px);} to {opacity: 1; transform: translateY(0);} }
+
+    /* Mobile nav */
+    .mobile-nav { position: fixed; top: 0; right: -100%; width: 80%; max-width: 400px; height: 100vh; background: white; z-index: 1000; padding: 80px 30px 30px; box-shadow: -5px 0 25px rgba(0,0,0,0.1); transition: var(--transition); display: flex; flex-direction: column; }
+    .mobile-nav.active { right: 0; }
+    .mobile-nav ul { list-style: none; }
+    .mobile-nav ul li { margin-bottom: 20px; }
+    .mobile-nav a { color: var(--dark); text-decoration: none; font-weight: 500; font-size: 18px; display: block; padding: 12px 0; border-bottom: 1px solid #f0f0f0; transition: var(--transition); }
+    .mobile-nav a:hover { color: var(--primary); padding-left: 10px; }
+    .close-menu { position: absolute; top: 25px; right: 25px; background: none; border: none; font-size: 24px; cursor: pointer; color: var(--dark); transition: var(--transition); }
+    .close-menu:hover { color: var(--primary); transform: rotate(90deg); }
+    .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; opacity: 0; visibility: hidden; transition: var(--transition); }
+    .overlay.active { opacity: 1; visibility: visible; }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .steps { flex-direction: column; }
+      .preview-container { flex-direction: column; }
+      .format-options { grid-template-columns: repeat(2, 1fr); }
+      .content-with-ads { flex-direction: column; }
+      .ad-sidebar { width: 100%; min-height: 120px; margin: 40px 0 0 0; }
+    }
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 36px; }
+      .hero p { font-size: 18px; }
+      nav ul { display: none; }
+      .hamburger { display: block; }
+      .format-options { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 576px) {
+      .converter-box { padding: 25px; }
+      .upload-area { padding: 30px 15px; }
+      .action-buttons { flex-direction: column; }
+      .btn { width: 100%; text-align: center; }
+      .mobile-nav { width: 85%; }
+    }
+  </style>
 </head>
 <body>
-    <div class="overlay" id="overlay"></div>
-    <header>
-        <div class="container header-content">
-            <div class="logo">
-                <i class="fas fa-image"></i>
-                <span>ImageCraft Pro</span>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">Tools</a></li>
-                    <li><a href="#">Pricing</a></li>
-                    <li><a href="#">Contact</a></li>
-                    <li><a href="#" class="nav-cta">Get Started</a></li>
-                </ul>
-            </nav>
-            <button class="hamburger" id="hamburger">
-                <i class="fas fa-bars"></i>
-            </button>
-        </div>
-    </header>
+  <div class="overlay" id="overlay"></div>
 
-    <div class="mobile-nav" id="mobileNav">
-        <button class="close-menu" id="closeMenu">
-            <i class="fas fa-times"></i>
-        </button>
+  <header>
+    <div class="container header-content">
+      <div class="logo">
+        <i class="fas fa-image"></i>
+        <span>ImageCraft Pro</span>
+      </div>
+      <nav>
         <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Tools</a></li>
-            <li><a href="#">Pricing</a></li>
-            <li><a href="#">Contact</a></li>
-            <li><a href="#" class="nav-cta">Get Started</a></li>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Tools</a></li>
+          <li><a href="#">Pricing</a></li>
+          <li><a href="#">Contact</a></li>
+          <li><a class="nav-cta" href="#">Get Started</a></li>
         </ul>
+      </nav>
+      <button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button>
     </div>
+  </header>
 
-    <div class="container">
-        <div class="ad-container" style="position: relative;">
-            <span class="ad-label">Advertisement</span>
-            <div class="ad-content">
-                <p>Premium Image Conversion Tool - Convert images in seconds!</p>
-                <!-- Ad code would go here -->
-            </div>
+  <div class="mobile-nav" id="mobileNav">
+    <button class="close-menu" id="closeMenu"><i class="fas fa-times"></i></button>
+    <ul>
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Tools</a></li>
+      <li><a href="#">Pricing</a></li>
+      <li><a href="#">Contact</a></li>
+      <li><a class="nav-cta" href="#">Get Started</a></li>
+    </ul>
+  </div>
+
+  <div class="container">
+    <div class="ad-container">
+      <span class="ad-label">Advertisement</span>
+      <div class="ad-content">
+        <p>Premium Image Conversion Tool - Convert images in seconds!</p>
+      </div>
+    </div>
+  </div>
+
+  <main class="container">
+    <section class="hero">
+      <h1>Convert Images <span>In Seconds</span></h1>
+      <p>Premium online tool to convert images between formats with maximum quality.</p>
+
+      <div class="converter-box">
+        <div class="upload-area" id="dropArea">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <h3>Drag & Drop your image here</h3>
+          <p>or</p>
+          <input type="file" id="fileInput" accept="image/*" hidden />
+          <button class="btn" id="browseBtn">Browse Files</button>
         </div>
-    </div>
 
-    <main class="container">
-        <section class="hero">
-            <h1>Convert Images <span>In Seconds</span></h1>
-            <p>Premium online tool to convert your images between various formats with maximum quality.</p>
-            
-            <div class="converter-box">
-                <div class="upload-area" id="dropArea">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <h3>Drag & Drop your image here</h3>
-                    <p>or</p>
-                    <input type="file" id="fileInput" accept="image/*" hidden>
-                    <button class="btn" id="browseBtn">Browse Files</button>
-                </div>
-                
-                <div class="preview-section" id="previewSection">
-                    <div class="preview-container">
-                        <div class="preview-box">
-                            <h3>Original Image</h3>
-                            <img src="" alt="Original preview" class="preview-img" id="originalPreview">
-                            <div class="image-info" id="originalInfo"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="action-buttons">
-                        <button class="btn btn-secondary" id="newUploadBtn">
-                            <i class="fas fa-redo"></i> Upload Different Image
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="conversion-section" id="conversionSection">
-                    <h3 style="text-align: center; margin-bottom: 20px;">Select Output Format</h3>
-                    
-                    <div class="format-options" id="formatOptions">
-                        <div class="format-option" data-format="jpeg">
-                            <i class="fas fa-file-image"></i>
-                            <p>JPEG</p>
-                        </div>
-                        <div class="format-option" data-format="png">
-                            <i class="fas fa-file-image"></i>
-                            <p>PNG</p>
-                        </div>
-                        <div class="format-option" data-format="webp">
-                            <i class="fas fa-file-image"></i>
-                            <p>WebP</p>
-                        </div>
-                        <div class="format-option" data-format="gif">
-                            <i class="fas fa-file-image"></i>
-                            <p>GIF</p>
-                        </div>
-                        <div class="format-option" data-format="bmp">
-                            <i class="fas fa-file-image"></i>
-                            <p>BMP</p>
-                        </div>
-                        <div class="format-option" data-format="tiff">
-                            <i class="fas fa-file-image"></i>
-                            <p>TIFF</p>
-                        </div>
-                    </div>
-                    
-                    <div class="action-buttons">
-                        <button class="btn btn-disabled" id="convertBtn" disabled>
-                            <i class="fas fa-cog"></i> Convert Image
-                        </button>
-                    </div>
-                    
-                    <div class="progress-container" id="progressContainer">
-                        <div class="progress-bar" id="progressBar"></div>
-                    </div>
-                </div>
-                
-                <div class="preview-section" id="resultSection">
-                    <div class="preview-container">
-                        <div class="preview-box">
-                            <h3>Converted Image</h3>
-                            <img src="" alt="Converted preview" class="preview-img" id="convertedPreview">
-                            <div class="image-info" id="convertedInfo"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="action-buttons">
-                        <button class="btn" id="downloadBtn">
-                            <i class="fas fa-download"></i> Download Image
-                        </button>
-                        <button class="btn btn-secondary" id="newConvertBtn">
-                            <i class="fas fa-redo"></i> New Conversion
-                        </button>
-                    </div>
-                </div>
+        <div class="preview-section" id="previewSection">
+          <div class="preview-container">
+            <div class="preview-box">
+              <h3>Original Image</h3>
+              <img id="originalPreview" class="preview-img" alt="Original preview" />
+              <div class="image-info" id="originalInfo"></div>
             </div>
+          </div>
+          <div class="action-buttons">
+            <button class="btn btn-secondary" id="newUploadBtn">
+              <i class="fas fa-redo"></i> Upload Different Image
+            </button>
+          </div>
+        </div>
+
+        <div class="conversion-section" id="conversionSection">
+          <h3 style="text-align:center; margin-bottom:20px;">Select Output Format</h3>
+          <div class="format-options" id="formatOptions">
+            <div class="format-option" data-format="jpeg"><i class="fas fa-file-image"></i><p>JPEG</p></div>
+            <div class="format-option" data-format="png"><i class="fas fa-file-image"></i><p>PNG</p></div>
+            <div class="format-option" data-format="webp"><i class="fas fa-file-image"></i><p>WebP</p></div>
+            <div class="format-option" data-format="gif"><i class="fas fa-file-image"></i><p>GIF</p></div>
+            <div class="format-option" data-format="bmp"><i class="fas fa-file-image"></i><p>BMP</p></div>
+            <div class="format-option" data-format="tiff"><i class="fas fa-file-image"></i><p>TIFF</p></div>
+          </div>
+          <div class="action-buttons">
+            <button class="btn btn-disabled" id="convertBtn" disabled>
+              <i class="fas fa-cog"></i> Convert Image
+            </button>
+          </div>
+          <div class="progress-container" id="progressContainer">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+        </div>
+
+        <div class="preview-section" id="resultSection">
+          <div class="preview-container">
+            <div class="preview-box">
+              <h3>Converted Image</h3>
+              <img id="convertedPreview" class="preview-img" alt="Converted preview" />
+              <div class="image-info" id="convertedInfo"></div>
+            </div>
+          </div>
+          <div class="action-buttons">
+            <button class="btn" id="downloadBtn"><i class="fas fa-download"></i> Download Image</button>
+            <button class="btn btn-secondary" id="newConvertBtn"><i class="fas fa-redo"></i> New Conversion</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="container">
+    <div class="content-with-ads">
+      <div class="main-content">
+        <div class="ad-container">
+          <span class="ad-label">Advertisement</span>
+          <div class="ad-content"><p>Upgrade to Premium for faster conversions and no ads!</p></div>
+        </div>
+
+        <section class="how-it-works">
+          <div class="section-title">
+            <h2>How It Works</h2>
+            <p>Convert images in just three simple steps</p>
+          </div>
+          <div class="steps">
+            <div class="step">
+              <i class="fas fa-upload"></i>
+              <h3>Upload Your Image</h3>
+              <p>Drag and drop your image or browse files</p>
+            </div>
+            <div class="step">
+              <i class="fas fa-cog"></i>
+              <h3>Choose Format & Convert</h3>
+              <p>Select output format and click convert</p>
+            </div>
+            <div class="step">
+              <i class="fas fa-download"></i>
+              <h3>Download Result</h3>
+              <p>Preview and download in high quality</p>
+            </div>
+          </div>
         </section>
-    </main>
+      </div>
 
-    <div class="container">
-        <div class="content-with-ads">
-            <div class="main-content">
-                <div class="ad-container" style="position: relative;">
-                    <span class="ad-label">Advertisement</span>
-                    <div class="ad-content">
-                        <p>Upgrade to Premium for faster conversions and no ads!</p>
-                        <!-- Ad code would go here -->
-                    </div>
-                </div>
-
-                <section class="how-it-works">
-                    <div class="section-title">
-                        <h2>How It Works</h2>
-                        <p>Convert your images in just three simple steps</p>
-                    </div>
-                    
-                    <div class="steps">
-                        <div class="step">
-                            <i class="fas fa-upload"></i>
-                            <h3>Upload Your Image</h3>
-                            <p>Drag and drop your image or browse files from your device</p>
-                        </div>
-                        <div class="step">
-                            <i class="fas fa-cog"></i>
-                            <h3>Choose Format & Convert</h3>
-                            <p>Select your desired output format and click the convert button</p>
-                        </div>
-                        <div class="step">
-                            <i class="fas fa-download"></i>
-                            <h3>Download Result</h3>
-                            <p>Preview the converted image and download it in high quality</p>
-                        </div>
-                    </div>
-                </section>
-            </div>
-            
-            <div class="ad-sidebar" style="position: relative;">
-                <span class="ad-label">Advertisement</span>
-                <div class="ad-content">
-                    <p>Premium Tools Available</p>
-                    <p>Batch conversion</p>
-                    <p>No quality loss</p>
-                    <!-- Ad code would go here -->
-                </div>
-            </div>
+      <div class="ad-sidebar">
+        <span class="ad-label">Advertisement</span>
+        <div class="ad-content">
+          <p>Premium Tools Available</p>
+          <p>Batch conversion</p>
+          <p>No quality loss</p>
         </div>
+      </div>
     </div>
+  </div>
 
-    <footer>
-        <div class="container">
-            <div class="ad-container" style="position: relative; margin-top: 0;">
-                <span class="ad-label">Advertisement</span>
-                <div class="ad-content">
-                    <p>Try our premium features free for 14 days!</p>
-                    <!-- Ad code would go here -->
-                </div>
-            </div>
-
-            <div class="footer-content">
-                <div class="footer-col">
-                    <h3>ImageCraft Pro</h3>
-                    <p>Premium image conversion tool for professionals and enthusiasts alike.</p>
-                    <div class="social-icons">
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-                <div class="footer-col">
-                    <h3>Tools</h3>
-                    <ul>
-                        <li><a href="#">JPEG to PNG</a></li>
-                        <li><a href="#">PNG to JPEG</a></li>
-                        <li><a href="#">WebP Converter</a></li>
-                        <li><a href="#">GIF Converter</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h3>Company</h3>
-                    <ul>
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Pricing</a></li>
-                        <li><a href="#">Blog</a></li>
-                        <li><a href="#">Careers</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h3>Support</h3>
-                    <ul>
-                        <li><a href="#">Help Center</a></li>
-                        <li><a href="#">FAQ</a></li>
-                        <li><a href="#">Contact</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="copyright">
-                <p>&copy; 2023 ImageCraft Pro. All rights reserved.</p>
-            </div>
+  <footer>
+    <div class="container">
+      <div class="ad-container" style="margin-top:0;">
+        <span class="ad-label">Advertisement</span>
+        <div class="ad-content"><p>Try our premium features free for 14 days!</p></div>
+      </div>
+      <div class="footer-content">
+        <div class="footer-col">
+          <h3>ImageCraft Pro</h3>
+          <p>Premium image conversion tool for professionals and enthusiasts alike.</p>
+          <div class="social-icons">
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
         </div>
-    </footer>
-<!-- GIF encoder (runtime + worker will be fetched inline to avoid CORS issues) -->
-<script src="https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.min.js"></script>
+        <div class="footer-col">
+          <h3>Tools</h3>
+          <ul>
+            <li><a href="#">JPEG to PNG</a></li>
+            <li><a href="#">PNG to JPEG</a></li>
+            <li><a href="#">WebP Converter</a></li>
+            <li><a href="#">GIF Converter</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Company</h3>
+          <ul>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Pricing</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Careers</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Support</h3>
+          <ul>
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="copyright">
+        <p>© 2023 ImageCraft Pro. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
 
-<!-- Canvas to BMP (pure client-side BMP encoding) -->
-<script src="https://cdn.jsdelivr.net/npm/canvas-to-bmp@1.1.1/canvastobmp.min.js"></script>
+  <!-- Encoders: GIF, BMP, TIFF -->
+  <script src="https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-to-bmp@1.1.1/canvastobmp.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/utif@3.1.0/UTIF.min.js"></script>
 
-<!-- UTIF.js (TIFF encoder/decoder used for real TIFF output) -->
-<script src="https://cdn.jsdelivr.net/npm/utif@3.1.0/UTIF.min.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Elements (unchanged)
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Elements
     const dropArea = document.getElementById('dropArea');
     const fileInput = document.getElementById('fileInput');
     const browseBtn = document.getElementById('browseBtn');
@@ -986,48 +400,48 @@ document.addEventListener('DOMContentLoaded', function() {
     let originalFileName = '';
     let originalFileType = '';
 
-    // Mobile Menu (unchanged)
+    // Mobile Menu
     hamburger.addEventListener('click', () => {
-        mobileNav.classList.add('active');
-        overlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
+      mobileNav.classList.add('active');
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
     });
     function closeMobileMenu() {
-        mobileNav.classList.remove('active');
-        overlay.classList.remove('active');
-        document.body.style.overflow = 'auto';
+      mobileNav.classList.remove('active');
+      overlay.classList.remove('active');
+      document.body.style.overflow = 'auto';
     }
     closeMenu.addEventListener('click', closeMobileMenu);
     overlay.addEventListener('click', closeMobileMenu);
 
-    // Selection UI (unchanged visuals)
+    // Format selection
     formatOptions.forEach(option => {
-        option.addEventListener('click', () => {
-            formatOptions.forEach(opt => opt.classList.remove('active'));
-            option.classList.add('active');
-            selectedFormat = option.getAttribute('data-format');
-            convertBtn.disabled = false;
-            convertBtn.classList.remove('btn-disabled');
-        });
+      option.addEventListener('click', () => {
+        formatOptions.forEach(opt => opt.classList.remove('active'));
+        option.classList.add('active');
+        selectedFormat = option.getAttribute('data-format');
+        convertBtn.disabled = false;
+        convertBtn.classList.remove('btn-disabled');
+      });
     });
 
-    // Drag-drop and browse (unchanged)
+    // Upload and drag/drop
     browseBtn.addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', handleFileSelect);
     dropArea.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropArea.style.borderColor = 'var(--primary)';
-        dropArea.style.backgroundColor = '#f8f9fa';
+      e.preventDefault();
+      dropArea.style.borderColor = 'var(--primary)';
+      dropArea.style.backgroundColor = '#f8f9fa';
     });
     dropArea.addEventListener('dragleave', () => {
-        dropArea.style.borderColor = '#d0d7de';
-        dropArea.style.backgroundColor = 'transparent';
+      dropArea.style.borderColor = '#d0d7de';
+      dropArea.style.backgroundColor = 'transparent';
     });
     dropArea.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropArea.style.borderColor = '#d0d7de';
-        dropArea.style.backgroundColor = 'transparent';
-        if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files);
+      e.preventDefault();
+      dropArea.style.borderColor = '#d0d7de';
+      dropArea.style.backgroundColor = 'transparent';
+      if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files);
     });
 
     // Actions
@@ -1037,295 +451,276 @@ document.addEventListener('DOMContentLoaded', function() {
     newUploadBtn.addEventListener('click', resetConverter);
 
     function handleFileSelect(e) {
-        if (e.target.files.length) handleFile(e.target.files);
+      if (e.target.files.length) handleFile(e.target.files);
     }
 
     function handleFile(file) {
-        if (!file.type.match('image.*')) {
-            alert('Please select an image file.');
-            return;
-        }
-        selectedFile = file;
-        originalFileName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
-        originalFileType = file.type.split('/')[1] || '';
+      if (!file.type.match('image.*')) {
+        alert('Please select an image file.');
+        return;
+      }
+      selectedFile = file;
+      originalFileName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+      originalFileType = file.type.split('/')[1] || '';
 
-        const reader = new FileReader();
-        reader.onload = function(ev) {
-            originalPreview.src = ev.target.result;
-            const sizeKB = Math.round(file.size / 1024);
-            originalInfo.innerHTML = `
-                <p><strong>Name:</strong> <span>${file.name}</span></p>
-                <p><strong>Type:</strong> <span>${file.type}</span></p>
-                <p><strong>Size:</strong> <span>${sizeKB} KB</span></p>
-            `;
-        };
-        reader.readAsDataURL(file);
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        originalPreview.src = ev.target.result;
+        const sizeKB = Math.round(file.size / 1024);
+        originalInfo.innerHTML = `
+          <p><strong>Name:</strong> <span>${file.name}</span></p>
+          <p><strong>Type:</strong> <span>${file.type}</span></p>
+          <p><strong>Size:</strong> <span>${sizeKB} KB</span></p>
+        `;
+      };
+      reader.readAsDataURL(file);
 
-        // Show sections (unchanged layout)
-        dropArea.style.display = 'none';
-        previewSection.style.display = 'block';
-        conversionSection.style.display = 'block';
-        resultSection.style.display = 'none';
+      // Show sections
+      dropArea.style.display = 'none';
+      previewSection.style.display = 'block';
+      conversionSection.style.display = 'block';
+      resultSection.style.display = 'none';
 
-        // Reset selection
-        formatOptions.forEach(opt => opt.classList.remove('active'));
-        selectedFormat = '';
-        convertBtn.disabled = true;
-        convertBtn.classList.add('btn-disabled');
+      // Reset selection
+      formatOptions.forEach(opt => opt.classList.remove('active'));
+      selectedFormat = '';
+      convertBtn.disabled = true;
+      convertBtn.classList.add('btn-disabled');
 
-        // Reset outputs
-        clearConverted();
+      clearConverted();
     }
 
     function clearConverted() {
-        if (convertedBlobURL) URL.revokeObjectURL(convertedBlobURL);
-        convertedBlob = null;
-        convertedBlobURL = '';
-        previewURLForImg = '';
-        convertedPreview.src = '';
-        convertedInfo.innerHTML = '';
-        progressBar.style.width = '0%';
-        progressContainer.style.display = 'none';
+      if (convertedBlobURL) URL.revokeObjectURL(convertedBlobURL);
+      if (previewURLForImg) URL.revokeObjectURL(previewURLForImg);
+      convertedBlob = null;
+      convertedBlobURL = '';
+      previewURLForImg = '';
+      convertedPreview.src = '';
+      convertedInfo.innerHTML = '';
+      progressBar.style.width = '0%';
+      progressContainer.style.display = 'none';
     }
 
     function showProgress(pct) {
-        progressContainer.style.display = 'block';
-        progressBar.style.width = pct + '%';
+      progressContainer.style.display = 'block';
+      progressBar.style.width = pct + '%';
     }
 
     function canvasFromImage(img) {
-        const c = document.createElement('canvas');
-        c.width = img.naturalWidth || img.width || 0;
-        c.height = img.naturalHeight || img.height || 0;
-        const ctx = c.getContext('2d');
-        ctx.drawImage(img, 0, 0);
-        return c;
+      const c = document.createElement('canvas');
+      c.width = img.naturalWidth || img.width || 0;
+      c.height = img.naturalHeight || img.height || 0;
+      const ctx = c.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      return c;
     }
 
     function dataURLtoBlob(dataURL) {
-        const [meta, base64] = dataURL.split(',');
-        const mime = meta.match(/data:(.*?);base64/)[1] || 'application/octet-stream';
-        const bin = atob(base64);
-        const len = bin.length;
-        const u8 = new Uint8Array(len);
-        for (let i = 0; i < len; i++) u8[i] = bin.charCodeAt(i);
-        return new Blob([u8], { type: mime });
+      const [meta, base64] = dataURL.split(',');
+      const mimeMatch = /data:(.*?);base64/.exec(meta);
+      const mime = mimeMatch ? mimeMatch[1] : 'application/octet-stream';
+      const bin = atob(base64);
+      const len = bin.length;
+      const u8 = new Uint8Array(len);
+      for (let i = 0; i < len; i++) u8[i] = bin.charCodeAt(i);
+      return new Blob([u8], { type: mime });
     }
 
+    // Standards-based toBlob with fallback via dataURL (PNG if type is unsupported per spec)
     function toBlobFromCanvas(canvas, type, quality) {
-        return new Promise((resolve) => {
-            if (canvas.toBlob) {
-                canvas.toBlob((blob) => {
-                    if (blob) return resolve(blob);
-                    // Fallback via dataURL if browser returns null
-                    const dataURL = canvas.toDataURL(type, typeof quality === 'number' ? quality : undefined);
-                    resolve(dataURLtoBlob(dataURL));
-                }, type, quality);
-            } else {
-                const dataURL = canvas.toDataURL(type, typeof quality === 'number' ? quality : undefined);
-                resolve(dataURLtoBlob(dataURL));
-            }
-        });
+      return new Promise((resolve) => {
+        if (canvas.toBlob) {
+          canvas.toBlob((blob) => {
+            if (blob) return resolve(blob);
+            const dataURL = canvas.toDataURL(type, typeof quality === 'number' ? quality : undefined);
+            resolve(dataURLtoBlob(dataURL));
+          }, type, quality);
+        } else {
+          const dataURL = canvas.toDataURL(type, typeof quality === 'number' ? quality : undefined);
+          resolve(dataURLtoBlob(dataURL));
+        }
+      });
     }
 
-    // Load GIF worker script as blob URL to avoid cross-origin Worker issues
+    // Load gif.js worker as same-origin Blob URL (avoids cross-origin Worker restrictions)
     let gifWorkerURLPromise = null;
     function getGifWorkerURL() {
-        if (!gifWorkerURLPromise) {
-            gifWorkerURLPromise = fetch('https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js')
-                .then(r => {
-                    if (!r.ok) throw new Error('Failed to load GIF worker');
-                    return r.blob();
-                })
-                .then(blob => URL.createObjectURL(blob));
-        }
-        return gifWorkerURLPromise;
+      if (!gifWorkerURLPromise) {
+        gifWorkerURLPromise = fetch('https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js')
+          .then(r => {
+            if (!r.ok) throw new Error('Failed to load GIF worker');
+            return r.blob();
+          })
+          .then(blob => URL.createObjectURL(blob));
+      }
+      return gifWorkerURLPromise;
     }
 
     async function encodeGIF(canvas) {
-        const workerScript = await getGifWorkerURL();
-        return new Promise((resolve, reject) => {
-            try {
-                const gif = new GIF({
-                    workers: 2,
-                    workerScript,
-                    quality: 10,
-                    width: canvas.width,
-                    height: canvas.height
-                });
-                // Single-frame GIF from current canvas
-                gif.addFrame(canvas, { copy: true, delay: 0 });
-                gif.on('finished', (blob) => resolve(blob));
-                gif.render();
-            } catch (e) {
-                reject(e);
-            }
-        });
+      const workerScript = await getGifWorkerURL();
+      return new Promise((resolve, reject) => {
+        try {
+          const gif = new GIF({
+            workers: 2,
+            workerScript,
+            quality: 10,
+            width: canvas.width,
+            height: canvas.height
+          });
+          // Single-frame GIF
+          gif.addFrame(canvas, { copy: true, delay: 0 });
+          gif.on('finished', (blob) => resolve(blob));
+          gif.render();
+        } catch (e) { reject(e); }
+      });
     }
 
     async function encodeBMP(canvas) {
-        return new Promise((resolve, reject) => {
-            try {
-                CanvasToBMP.toBlob(canvas, (blob) => {
-                    if (blob) resolve(blob);
-                    else reject(new Error('BMP encode failed'));
-                });
-            } catch (e) {
-                reject(e);
-            }
-        });
+      return new Promise((resolve, reject) => {
+        try {
+          CanvasToBMP.toBlob(canvas, (blob) => {
+            if (blob) resolve(blob);
+            else reject(new Error('BMP encode failed'));
+          });
+        } catch (e) { reject(e); }
+      });
     }
 
     async function encodeTIFF(canvas) {
-        const ctx = canvas.getContext('2d');
-        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const rgba = imgData.data; // Uint8ClampedArray
-        // UTIF.encodeImage expects a Uint8Array with RGBA
-        const rgba8 = (rgba instanceof Uint8Array) ? rgba : new Uint8Array(rgba.buffer);
-        const ab = UTIF.encodeImage(rgba8, canvas.width, canvas.height);
-        return new Blob([ab], { type: 'image/tiff' });
+      const ctx = canvas.getContext('2d');
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const rgbaClamped = imgData.data; // Uint8ClampedArray RGBA
+      const rgba = (rgbaClamped instanceof Uint8Array) ? rgbaClamped : new Uint8Array(rgbaClamped.buffer);
+      // UTIF.encodeImage returns ArrayBuffer for a TIFF from RGBA
+      const ab = UTIF.encodeImage(rgba, canvas.width, canvas.height);
+      return new Blob([ab], { type: 'image/tiff' });
     }
 
     async function convertImage() {
-        if (!selectedFile || !selectedFormat) return;
+      if (!selectedFile || !selectedFormat) return;
 
-        clearConverted();
-        showProgress(15);
+      clearConverted();
+      showProgress(20);
 
-        // Prepare canvas from original
-        const canvas = canvasFromImage(originalPreview);
+      const canvas = canvasFromImage(originalPreview);
+      let blob = null;
+      let downloadExt = selectedFormat;
 
-        let blob = null;
-        let mime = '';
-        let downloadExt = selectedFormat;
-
-        try {
-            switch (selectedFormat) {
-                case 'jpeg':
-                    mime = 'image/jpeg';
-                    showProgress(35);
-                    blob = await toBlobFromCanvas(canvas, mime, 0.9);
-                    break;
-                case 'png':
-                    mime = 'image/png';
-                    showProgress(35);
-                    blob = await toBlobFromCanvas(canvas, mime);
-                    break;
-                case 'webp':
-                    mime = 'image/webp';
-                    showProgress(35);
-                    blob = await toBlobFromCanvas(canvas, mime, 0.9);
-                    break;
-                case 'gif':
-                    mime = 'image/gif';
-                    showProgress(35);
-                    blob = await encodeGIF(canvas);
-                    break;
-                case 'bmp':
-                    mime = 'image/bmp';
-                    showProgress(35);
-                    blob = await encodeBMP(canvas);
-                    break;
-                case 'tiff':
-                    mime = 'image/tiff';
-                    showProgress(35);
-                    blob = await encodeTIFF(canvas);
-                    break;
-                default:
-                    throw new Error('Unsupported format');
-            }
-
-            if (!blob) throw new Error('Encoding returned empty blob');
-
-            showProgress(75);
-
-            // Create URLs for preview and download
-            convertedBlob = blob;
-            convertedBlobURL = URL.createObjectURL(blob);
-
-            // Some browsers cannot display TIFF in <img>, so use PNG just for preview but keep real TIFF for download
-            if (selectedFormat === 'tiff') {
-                const pngPreviewBlob = await toBlobFromCanvas(canvas, 'image/png');
-                previewURLForImg = URL.createObjectURL(pngPreviewBlob);
-                convertedPreview.src = previewURLForImg;
-            } else {
-                convertedPreview.src = convertedBlobURL;
-            }
-
-            // File info (use blob.size for accuracy)
-            const sizeKB = Math.max(1, Math.round(blob.size / 1024));
-
-            // Ensure extension matches true mime produced
-            if (blob.type === 'image/png') downloadExt = 'png';
-            else if (blob.type === 'image/jpeg') downloadExt = 'jpeg';
-            else if (blob.type === 'image/webp') downloadExt = 'webp';
-            else if (blob.type === 'image/gif') downloadExt = 'gif';
-            else if (blob.type === 'image/bmp') downloadExt = 'bmp';
-            else if (blob.type === 'image/tiff') downloadExt = 'tiff';
-
-            convertedInfo.innerHTML = `
-                <p><strong>Name:</strong> <span>${originalFileName}.${downloadExt}</span></p>
-                <p><strong>Type:</strong> <span>${blob.type || mime}</span></p>
-                <p><strong>Size:</strong> <span>${sizeKB} KB</span></p>
-            `;
-
-            // Toggle sections
-            conversionSection.style.display = 'none';
-            resultSection.style.display = 'block';
-            progressContainer.style.display = 'none';
-            resultSection.scrollIntoView({ behavior: 'smooth' });
-        } catch (e) {
-            showConversionError(e);
+      try {
+        switch (selectedFormat) {
+          case 'jpeg':
+            showProgress(40);
+            blob = await toBlobFromCanvas(canvas, 'image/jpeg', 0.9);
+            break;
+          case 'png':
+            showProgress(40);
+            blob = await toBlobFromCanvas(canvas, 'image/png');
+            break;
+          case 'webp':
+            showProgress(40);
+            blob = await toBlobFromCanvas(canvas, 'image/webp', 0.9);
+            break;
+          case 'gif':
+            showProgress(40);
+            blob = await encodeGIF(canvas);
+            break;
+          case 'bmp':
+            showProgress(40);
+            blob = await encodeBMP(canvas);
+            break;
+          case 'tiff':
+            showProgress(40);
+            blob = await encodeTIFF(canvas);
+            break;
+          default:
+            throw new Error('Unsupported format');
         }
+        if (!blob) throw new Error('Encoding returned empty blob');
+
+        showProgress(80);
+
+        convertedBlob = blob;
+        convertedBlobURL = URL.createObjectURL(blob);
+
+        // TIFF preview: many browsers cannot render TIFF in <img>, use PNG preview for display only
+        if (selectedFormat === 'tiff') {
+          const pngPreview = await toBlobFromCanvas(canvas, 'image/png');
+          previewURLForImg = URL.createObjectURL(pngPreview);
+          convertedPreview.src = previewURLForImg;
+        } else {
+          convertedPreview.src = convertedBlobURL;
+        }
+
+        const sizeKB = Math.max(1, Math.round(blob.size / 1024));
+
+        // Normalize extension to actual mime produced
+        if (blob.type === 'image/png') downloadExt = 'png';
+        else if (blob.type === 'image/jpeg') downloadExt = 'jpeg';
+        else if (blob.type === 'image/webp') downloadExt = 'webp';
+        else if (blob.type === 'image/gif') downloadExt = 'gif';
+        else if (blob.type === 'image/bmp') downloadExt = 'bmp';
+        else if (blob.type === 'image/tiff') downloadExt = 'tiff';
+
+        convertedInfo.innerHTML = `
+          <p><strong>Name:</strong> <span>${originalFileName}.${downloadExt}</span></p>
+          <p><strong>Type:</strong> <span>${blob.type || 'application/octet-stream'}</span></p>
+          <p><strong>Size:</strong> <span>${sizeKB} KB</span></p>
+        `;
+
+        conversionSection.style.display = 'none';
+        resultSection.style.display = 'block';
+        progressContainer.style.display = 'none';
+        resultSection.scrollIntoView({ behavior: 'smooth' });
+      } catch (e) {
+        showConversionError(e);
+      }
     }
 
     function showConversionError(e) {
-        progressContainer.style.display = 'none';
-        alert('Conversion failed: ' + (e && e.message ? e.message : 'Unknown error'));
+      progressContainer.style.display = 'none';
+      alert('Conversion failed: ' + (e && e.message ? e.message : 'Unknown error'));
     }
 
     function downloadImage() {
-        if (!convertedBlob) return;
-        let fileExtension = selectedFormat;
+      if (!convertedBlob) return;
 
-        // Trust the blob.type to decide extension
-        if (convertedBlob.type === 'image/png') fileExtension = 'png';
-        else if (convertedBlob.type === 'image/jpeg') fileExtension = 'jpeg';
-        else if (convertedBlob.type === 'image/webp') fileExtension = 'webp';
-        else if (convertedBlob.type === 'image/gif') fileExtension = 'gif';
-        else if (convertedBlob.type === 'image/bmp') fileExtension = 'bmp';
-        else if (convertedBlob.type === 'image/tiff') fileExtension = 'tiff';
+      let fileExtension = selectedFormat;
+      if (convertedBlob.type === 'image/png') fileExtension = 'png';
+      else if (convertedBlob.type === 'image/jpeg') fileExtension = 'jpeg';
+      else if (convertedBlob.type === 'image/webp') fileExtension = 'webp';
+      else if (convertedBlob.type === 'image/gif') fileExtension = 'gif';
+      else if (convertedBlob.type === 'image/bmp') fileExtension = 'bmp';
+      else if (convertedBlob.type === 'image/tiff') fileExtension = 'tiff';
 
-        const link = document.createElement('a');
-        link.href = convertedBlobURL || URL.createObjectURL(convertedBlob);
-        link.download = `${originalFileName}.${fileExtension}`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+      const link = document.createElement('a');
+      link.href = convertedBlobURL || URL.createObjectURL(convertedBlob);
+      link.download = `${originalFileName}.${fileExtension}`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
 
     function resetConverter() {
-        selectedFile = null;
-        originalFileName = '';
-        originalFileType = '';
-        fileInput.value = '';
+      selectedFile = null;
+      originalFileName = '';
+      originalFileType = '';
+      fileInput.value = '';
 
-        dropArea.style.display = 'block';
-        previewSection.style.display = 'none';
-        conversionSection.style.display = 'none';
-        resultSection.style.display = 'none';
+      dropArea.style.display = 'block';
+      previewSection.style.display = 'none';
+      conversionSection.style.display = 'none';
+      resultSection.style.display = 'none';
 
-        formatOptions.forEach(opt => opt.classList.remove('active'));
-        selectedFormat = '';
-        convertBtn.disabled = true;
-        convertBtn.classList.add('btn-disabled');
+      formatOptions.forEach(opt => opt.classList.remove('active'));
+      selectedFormat = '';
+      convertBtn.disabled = true;
+      convertBtn.classList.add('btn-disabled');
 
-        originalPreview.src = '';
-        clearConverted();
+      originalPreview.src = '';
+      clearConverted();
     }
-});
-</script>
-
-                
+  });
+  </script>
 </body>
 </html>
